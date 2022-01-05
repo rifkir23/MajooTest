@@ -1,5 +1,5 @@
 #STAGE 1
-FROM golang:1.16-alpine
+FROM golang:1.17-alpine
 RUN apk add build-base
 RUN mkdir /app
 ADD . /app
