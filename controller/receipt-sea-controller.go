@@ -39,13 +39,13 @@ func (c *receiptSeaController) FindByNumber(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"receipt_sea_number": receiptSeaJson.ReceiptSeaNumber})
 
 	var receipt_sea entity.Resi = c.receiptSeaService.FindByNumber(receiptSeaJson.ReceiptSeaNumber)
-	if (receipt_sea == entity.Resi{}) {
-		res := helper.BuildErrorResponse("Data Not Found", "No data with given id", helper.EmptyObj{})
-		context.JSON(http.StatusNotFound, res)
-	} else {
-		res := helper.BuildResponse(true, "OK", receipt_sea)
-		context.JSON(http.StatusOK, res)
-	}
+	//if (receipt_sea == entity.Resi{}) {
+	//	res := helper.BuildErrorResponse("Data Not Found", "No data with given id", helper.EmptyObj{})
+	//	context.JSON(http.StatusNotFound, res)
+	//} else {
+	res := helper.BuildResponse(true, "OK", receipt_sea)
+	context.JSON(http.StatusOK, res)
+	//}
 }
 
 type ReceiptSeaJson struct {
