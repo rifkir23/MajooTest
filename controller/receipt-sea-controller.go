@@ -27,16 +27,32 @@ func NewReceiptSeaController(receiptSeaServ service.ReceiptSeaService, jwtServ s
 	}
 }
 
+// All godoc
+// @Summary All example
+// @Schemes
+// @Description All Receipt Sea
+// @Accept json
+// @Produce json
+// @Success 200 {object} helper.Response{data=[]entity.Resi}
+// @Router /all [GET]
 func (c *receiptSeaController) All(context *gin.Context) {
 	var receipts []entity.Resi = c.receiptSeaService.All()
 	res := helper.BuildResponse(true, "OK", receipts)
 	context.JSON(http.StatusOK, res)
 }
 
+// FindByNumber godoc
+// @Summary All example
+// @Schemes
+// @Description Receipt Find By Number
+// @Accept json
+// @Produce json
+// @Param FindByNumber body ReceiptSeaJson true "FindByNumber"
+// @Success 200 {object} helper.Response{data=[]entity.Resi}
+// @Router /main [POST]
 func (c *receiptSeaController) FindByNumber(context *gin.Context) {
 	var receiptSeaJson ReceiptSeaJson
 	context.BindJSON(&receiptSeaJson)
-	context.JSON(http.StatusOK, gin.H{"receipt_sea_number": receiptSeaJson.ReceiptSeaNumber})
 
 	var receipt_sea entity.Resi = c.receiptSeaService.FindByNumber(receiptSeaJson.ReceiptSeaNumber)
 	//if (receipt_sea == entity.Resi{}) {

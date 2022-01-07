@@ -35,7 +35,7 @@ func main() {
 	})
 
 	docs.SwaggerInfo.BasePath = "/"
-	v1 := r.Group("/api/v1")
+	v1 := r.Group("/v1")
 	{
 		eg := v1.Group("/example")
 		{

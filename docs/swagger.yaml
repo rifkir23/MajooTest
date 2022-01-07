@@ -1,4 +1,155 @@
+definitions:
+  controller.ReceiptSeaJson:
+    properties:
+      receipt_sea_number:
+        type: string
+    type: object
+  entity.Container:
+    properties:
+      id_container:
+        type: integer
+      id_rts:
+        type: string
+      kode:
+        type: string
+      nomor:
+        type: string
+      status:
+        type: integer
+      tanggal_arrived_c:
+        type: string
+      tanggal_berangkat_c:
+        type: string
+      tanggal_monitoring_c:
+        type: string
+      tgl_antri_kapal:
+        type: string
+      tgl_atur_kapal:
+        type: string
+      tgl_closing:
+        type: string
+      tgl_est_dumai:
+        type: string
+      tgl_eta:
+        type: string
+      tgl_loading:
+        type: string
+      tgl_notul:
+        type: string
+      tgl_pib:
+        type: string
+    type: object
+  entity.Giw:
+    properties:
+      barang:
+        type: string
+      berat:
+        type: string
+      container:
+        $ref: '#/definitions/entity.Container'
+      container_id:
+        type: integer
+      harga:
+        type: number
+      harga_jual:
+        type: number
+      id:
+        type: integer
+      kurs:
+        type: number
+      nilai:
+        type: string
+      nomor:
+        type: string
+      note:
+        type: string
+      remarks:
+        type: string
+      resi_id:
+        type: integer
+      supplier:
+        type: integer
+      tel:
+        type: integer
+      volume:
+        type: string
+    type: object
+  entity.Resi:
+    properties:
+      giw:
+        items:
+          $ref: '#/definitions/entity.Giw'
+        type: array
+      id_resi:
+        type: integer
+      konfirmasi_resi:
+        type: string
+      nomor:
+        type: string
+      supplier:
+        type: string
+      tanggal:
+        type: string
+      tel:
+        type: string
+    type: object
+  helper.Response:
+    properties:
+      data: { }
+      errors: { }
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
 info:
   contact: { }
-paths: { }
+paths:
+  /all:
+    get:
+      consumes:
+        - application/json
+      description: All Receipt Sea
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/entity.Resi'
+                    type: array
+                type: object
+      summary: All example
+  /main:
+    post:
+      consumes:
+        - application/json
+      description: Receipt Find By Number
+      parameters:
+        - description: FindByNumber
+          in: body
+          name: FindByNumber
+          required: true
+          schema:
+            $ref: '#/definitions/controller.ReceiptSeaJson'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/entity.Resi'
+                    type: array
+                type: object
+      summary: All example
 swagger: "2.0"

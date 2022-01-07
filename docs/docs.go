@@ -22,7 +22,247 @@ var doc = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/all": {
+            "get": {
+                "description": "All Receipt Sea",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Resi"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/main": {
+            "post": {
+                "description": "Receipt Find By Number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "description": "FindByNumber",
+                        "name": "FindByNumber",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ReceiptSeaJson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Resi"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.ReceiptSeaJson": {
+            "type": "object",
+            "properties": {
+                "receipt_sea_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Container": {
+            "type": "object",
+            "properties": {
+                "id_container": {
+                    "type": "integer"
+                },
+                "id_rts": {
+                    "type": "string"
+                },
+                "kode": {
+                    "type": "string"
+                },
+                "nomor": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "tanggal_arrived_c": {
+                    "type": "string"
+                },
+                "tanggal_berangkat_c": {
+                    "type": "string"
+                },
+                "tanggal_monitoring_c": {
+                    "type": "string"
+                },
+                "tgl_antri_kapal": {
+                    "type": "string"
+                },
+                "tgl_atur_kapal": {
+                    "type": "string"
+                },
+                "tgl_closing": {
+                    "type": "string"
+                },
+                "tgl_est_dumai": {
+                    "type": "string"
+                },
+                "tgl_eta": {
+                    "type": "string"
+                },
+                "tgl_loading": {
+                    "type": "string"
+                },
+                "tgl_notul": {
+                    "type": "string"
+                },
+                "tgl_pib": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Giw": {
+            "type": "object",
+            "properties": {
+                "barang": {
+                    "type": "string"
+                },
+                "berat": {
+                    "type": "string"
+                },
+                "container": {
+                    "$ref": "#/definitions/entity.Container"
+                },
+                "container_id": {
+                    "type": "integer"
+                },
+                "harga": {
+                    "type": "number"
+                },
+                "harga_jual": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kurs": {
+                    "type": "number"
+                },
+                "nilai": {
+                    "type": "string"
+                },
+                "nomor": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "remarks": {
+                    "type": "string"
+                },
+                "resi_id": {
+                    "type": "integer"
+                },
+                "supplier": {
+                    "type": "integer"
+                },
+                "tel": {
+                    "type": "integer"
+                },
+                "volume": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Resi": {
+            "type": "object",
+            "properties": {
+                "giw": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Giw"
+                    }
+                },
+                "id_resi": {
+                    "type": "integer"
+                },
+                "konfirmasi_resi": {
+                    "type": "string"
+                },
+                "nomor": {
+                    "type": "string"
+                },
+                "supplier": {
+                    "type": "string"
+                },
+                "tanggal": {
+                    "type": "string"
+                },
+                "tel": {
+                    "type": "string"
+                }
+            }
+        },
+        "helper.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
 }`
 
 type swaggerInfo struct {
