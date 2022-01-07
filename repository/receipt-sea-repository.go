@@ -24,7 +24,7 @@ func NewReceiptSeaRepository(dbConn *gorm.DB) ReceiptSeaRepository {
 
 func (db *receiptSeaConnection) FindReceiptSeaByNumber(resiNumber string) entity.Resi {
 	var receipt_sea entity.Resi
-	db.connection.Where("nomor = ?", resiNumber).First(&receipt_sea)
+	db.connection.Preload("Giws").Preload("Giws.Container").Where("nomor = ?", resiNumber).First(&receipt_sea)
 	return receipt_sea
 }
 
