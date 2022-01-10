@@ -43,9 +43,9 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 	var countArrivedSoon int64
 	var countOtw int64
 
-	db.connection.Model(&giw).Where("Container", "status = ?", "3").Count(&countDelay)
-	db.connection.Model(&giw).Where("Container", "status = ?", "4").Count(&countArrivedSoon)
-	db.connection.Model(&giw).Where("Container", "status = ?", "3").Count(&countOtw)
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "8").Count(&countDelay)
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "4").Count(&countArrivedSoon)
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "3").Count(&countOtw)
 
 	cd.Delay = countDelay
 	cd.ArrivedSoon = countArrivedSoon
