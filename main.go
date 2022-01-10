@@ -26,8 +26,9 @@ func main() {
 	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
 
-	r.POST("/main", receiptSeaController.FindByNumber)
+	r.POST("/find", receiptSeaController.FindByNumber)
 	r.GET("/all", receiptSeaController.All)
+	r.GET("/count", receiptSeaController.Count)
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",

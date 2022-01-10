@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/entity"
 	"github.com/wilopo-cargo/microservice-receipt-sea/repository"
 )
@@ -9,6 +10,7 @@ import (
 type ReceiptSeaService interface {
 	All() []entity.Resi
 	FindByNumber(resiNumber string) entity.Resi
+	Count(cd dto.CountDTO) dto.CountDTO
 }
 
 type receiptSeaService struct {
@@ -29,3 +31,11 @@ func (service *receiptSeaService) All() []entity.Resi {
 func (service *receiptSeaService) FindByNumber(resiNumber string) entity.Resi {
 	return service.receiptSeaRepository.FindReceiptSeaByNumber(resiNumber)
 }
+
+func (service *receiptSeaService) Count(cd dto.CountDTO) dto.CountDTO {
+	return service.receiptSeaRepository.CountReceiptSea(cd)
+}
+
+//func (service *receiptSeaService) Delay() []dto.DelayDTO {
+//	return service.receiptSeaRepository.Delay()
+//}
