@@ -58,9 +58,9 @@ var doc = `{
                 }
             }
         },
-        "/main": {
-            "post": {
-                "description": "Receipt Find By Number",
+        "/count": {
+            "get": {
+                "description": "Count Receipt Sea",
                 "consumes": [
                     "application/json"
                 ],
@@ -68,17 +68,6 @@ var doc = `{
                     "application/json"
                 ],
                 "summary": "All example",
-                "parameters": [
-                    {
-                        "description": "FindByNumber",
-                        "name": "FindByNumber",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.ReceiptSeaJson"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -91,10 +80,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.Resi"
-                                            }
+                                            "$ref": "#/definitions/dto.CountDTO"
                                         }
                                     }
                                 }
@@ -106,11 +92,17 @@ var doc = `{
         }
     },
     "definitions": {
-        "controller.ReceiptSeaJson": {
+        "dto.CountDTO": {
             "type": "object",
             "properties": {
-                "receipt_sea_number": {
-                    "type": "string"
+                "arrivedSoon": {
+                    "type": "integer"
+                },
+                "delay": {
+                    "type": "integer"
+                },
+                "onTheWay": {
+                    "type": "integer"
                 }
             }
         },

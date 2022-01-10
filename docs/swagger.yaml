@@ -1,8 +1,12 @@
 definitions:
-  controller.ReceiptSeaJson:
+  dto.CountDTO:
     properties:
-      receipt_sea_number:
-        type: string
+      arrivedSoon:
+        type: integer
+      delay:
+        type: integer
+      onTheWay:
+        type: integer
     type: object
   entity.Container:
     properties:
@@ -125,18 +129,11 @@ paths:
                     type: array
                 type: object
       summary: All example
-  /main:
-    post:
+  /count:
+    get:
       consumes:
         - application/json
-      description: Receipt Find By Number
-      parameters:
-        - description: FindByNumber
-          in: body
-          name: FindByNumber
-          required: true
-          schema:
-            $ref: '#/definitions/controller.ReceiptSeaJson'
+      description: Count Receipt Sea
       produces:
         - application/json
       responses:
@@ -147,9 +144,7 @@ paths:
               - $ref: '#/definitions/helper.Response'
               - properties:
                   data:
-                    items:
-                      $ref: '#/definitions/entity.Resi'
-                    type: array
+                    $ref: '#/definitions/dto.CountDTO'
                 type: object
       summary: All example
 swagger: "2.0"

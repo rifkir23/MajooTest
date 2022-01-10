@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/entity"
 	"gorm.io/gorm"
 )
@@ -9,6 +10,8 @@ import (
 type ReceiptSeaRepository interface {
 	AllReceiptSea() []entity.Resi
 	FindReceiptSeaByNumber(resiID string) entity.Resi
+	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
+	//Delay(dld dto.DelayListDTO) dto.DelayListDTO
 }
 
 type receiptSeaConnection struct {
@@ -33,3 +36,31 @@ func (db *receiptSeaConnection) AllReceiptSea() []entity.Resi {
 	db.connection.Limit(10).Find(&receipt_sea)
 	return receipt_sea
 }
+
+func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
+	var giw entity.Giw
+	var countDelay int64
+	var countArrivedSoon int64
+	var countOtw int64
+
+	db.connection.Model(&giw).Where("Container", "status = ?", "3").Count(&countDelay)
+	db.connection.Model(&giw).Where("Container", "status = ?", "4").Count(&countArrivedSoon)
+	db.connection.Model(&giw).Where("Container", "status = ?", "3").Count(&countOtw)
+
+	cd.Delay = countDelay
+	cd.ArrivedSoon = countArrivedSoon
+	cd.Otw = countOtw
+
+	return cd
+}
+
+//func (db *receiptSeaConnection) Delay(dld dto.DelayListDTO) dto.DelayListDTO {
+//	var receipt_sea []entity.Resi
+//	db.connection.Limit(10).Find(&receipt_sea)
+//	dld.Total = 10
+//	dld.Page = 10
+//	dld.TotalPage = 100
+//	dld.Type = "Delay"
+//	dld.Receipt = ""
+//	return dld
+//}
