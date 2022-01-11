@@ -11,6 +11,7 @@ import (
 	"github.com/wilopo-cargo/microservice-receipt-sea/service"
 	"gorm.io/gorm"
 	"net/http"
+	"os"
 	//docs "./docs"
 )
 
@@ -37,7 +38,7 @@ func main() {
 		})
 	})
 
-	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.BasePath = os.Getenv("SWAGGER_BASE_PATH")
 	v1 := r.Group("/v1")
 	{
 		eg := v1.Group("/example")
