@@ -29,6 +29,8 @@ func main() {
 	r.POST("/find", receiptSeaController.FindByNumber)
 	r.GET("/all", receiptSeaController.All)
 	r.GET("/count", receiptSeaController.Count)
+	r.GET("/delay", receiptSeaController.Delay)
+	r.GET("/arrived-soon", receiptSeaController.ArrivedSoon)
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
