@@ -244,8 +244,12 @@ var doc = `{
         "helper.Response": {
             "type": "object",
             "properties": {
-                "data": {},
-                "errors": {},
+                "data": {
+                    "type": "object"
+                },
+                "errors": {
+                    "type": "object"
+                },
                 "message": {
                     "type": "string"
                 },
@@ -308,5 +312,5 @@ func (s *s) ReadDoc() string {
 }
 
 func init() {
-	swag.Register("swagger", &s{})
+	swag.Register(swag.Name, &s{})
 }
