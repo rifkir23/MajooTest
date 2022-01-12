@@ -11,7 +11,8 @@ type ReceiptSeaRepository interface {
 	AllReceiptSea() []entity.Resi
 	FindReceiptSeaByNumber(resiID string) entity.Resi
 	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
-	//Delay(dld dto.DelayListDTO) dto.DelayListDTO
+	Delay(dto.DelayDTO) dto.DelayDTO
+	ArrivedSoon(dto.ArrivedSoonDTO) dto.ArrivedSoonDTO
 }
 
 type receiptSeaConnection struct {
@@ -54,13 +55,42 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 	return cd
 }
 
-//func (db *receiptSeaConnection) Delay(dld dto.DelayListDTO) dto.DelayListDTO {
-//	var receipt_sea []entity.Resi
-//	db.connection.Limit(10).Find(&receipt_sea)
-//	dld.Total = 10
-//	dld.Page = 10
-//	dld.TotalPage = 100
-//	dld.Type = "Delay"
-//	dld.Receipt = ""
-//	return dld
-//}
+func (db *receiptSeaConnection) Delay(dto.DelayDTO) dto.DelayDTO {
+	var giw entity.Giw
+	var receiptsDelay []dto.ReceiptDelayListDTO
+	var countDelay int64
+	db.connection.Model(&giw).Raw("SELECT id_resi,resi.tanggal,resi.nomor FROM giw " +
+		"LEFT JOIN resi on giw.resi_id = resi.id_resi " +
+		"LEFT JOIN container on giw.container_id = container.id_rts " +
+		"LEFT JOIN delay on container.id_rts = delay.id_container_rts " +
+		"WHERE (container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").Limit(10).Find(&receiptsDelay).Count(&countDelay)
+	results := dto.DelayDTO{
+		Total:     10,
+		Page:      10,
+		TotalPage: countDelay,
+		Type:      "Delay",
+		Receipt:   receiptsDelay,
+	}
+
+	return results
+}
+
+func (db *receiptSeaConnection) ArrivedSoon(dto.ArrivedSoonDTO) dto.ArrivedSoonDTO {
+	var giw entity.Giw
+	var receiptsArrivedSoon []dto.ReceiptArrivedSoonDTO
+	var countArrivedSoon int64
+	db.connection.Model(&giw).Raw("SELECT id_resi,resi.tanggal,resi.nomor FROM giw " +
+		"LEFT JOIN resi on giw.resi_id = resi.id_resi " +
+		"LEFT JOIN container on giw.container_id = container.id_rts " +
+		"LEFT JOIN delay on container.id_rts = delay.id_container_rts " +
+		"WHERE container.status = 4 limit 10").Find(&receiptsArrivedSoon).Count(&countArrivedSoon)
+	results := dto.ArrivedSoonDTO{
+		Total:     10,
+		Page:      10,
+		TotalPage: countArrivedSoon,
+		Type:      "ArrivedSoon",
+		Receipt:   receiptsArrivedSoon,
+	}
+
+	return results
+}
