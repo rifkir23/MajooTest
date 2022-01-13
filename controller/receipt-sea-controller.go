@@ -87,7 +87,7 @@ func (c *receiptSeaController) List(context *gin.Context) {
 	limit, err := strconv.ParseInt(context.Param("limit"), 0, 0)
 	status := context.Param("status")
 	if err != nil {
-		res := helper.BuildErrorResponse("No param id was found", err.Error(), helper.EmptyObj{})
+		res := helper.BuildErrorResponse("No param int was found", err.Error(), helper.EmptyObj{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)
 		return
 	}
