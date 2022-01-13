@@ -43,16 +43,6 @@ func (c *receiptSeaController) All(context *gin.Context) {
 	context.JSON(http.StatusOK, res)
 }
 
-// FindByNumber godoc
-// @Summary All example
-// @Schemes
-// @Description Receipt Find By Number
-// @Accept json
-// @Produce json
-// @Param FindByNumber body dto.ReceiptSeaJson true "FindByNumber"
-// @Success 200 {object} helper.Response{data=[]entity.Resi}
-// @Router /find [POST]
-
 func (c *receiptSeaController) FindByNumber(context *gin.Context) {
 	var receiptSeaJson dto.ReceiptSeaJson
 	context.BindJSON(&receiptSeaJson)
@@ -82,6 +72,15 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 	context.JSON(http.StatusOK, res)
 }
 
+// List godoc
+// @Summary All example
+// @Schemes
+// @Description Receipt List
+// @Accept json
+// @Produce json
+// @Param List body dto.BodyListReceipt true "List"
+// @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
+// @Router /list [GET]
 func (c *receiptSeaController) List(context *gin.Context) {
 	var pagination dto.BodyListReceipt
 	context.BindJSON(&pagination)

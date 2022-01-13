@@ -89,9 +89,66 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/list": {
+            "get": {
+                "description": "Receipt List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "description": "List",
+                        "name": "List",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.BodyListReceipt"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "dto.BodyListReceipt": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CountDTO": {
             "type": "object",
             "properties": {
@@ -103,6 +160,24 @@ var doc = `{
                 },
                 "onTheWay": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.ReceiptListResultDTO": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "receipt": {},
+                "total": {
+                    "type": "integer"
+                },
+                "totalPage": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -244,12 +319,8 @@ var doc = `{
         "helper.Response": {
             "type": "object",
             "properties": {
-                "data": {
-                    "type": "object"
-                },
-                "errors": {
-                    "type": "object"
-                },
+                "data": {},
+                "errors": {},
                 "message": {
                     "type": "string"
                 },
@@ -312,5 +383,5 @@ func (s *s) ReadDoc() string {
 }
 
 func init() {
-	swag.Register(swag.Name, &s{})
+	swag.Register("swagger", &s{})
 }

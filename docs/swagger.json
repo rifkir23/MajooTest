@@ -55,45 +55,120 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/helper.Response"
+                                  "$ref": "#/definitions/helper.Response"
                                 },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.CountDTO"
-                                        }
-                                    }
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "data": {
+                                    "$ref": "#/definitions/dto.CountDTO"
+                                  }
                                 }
+                              }
                             ]
                         }
                     }
                 }
             }
+        },
+      "/list": {
+        "get": {
+          "description": "Receipt List",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "summary": "All example",
+          "parameters": [
+            {
+              "description": "List",
+              "name": "List",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/dto.BodyListReceipt"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/helper.Response"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
         }
+      }
     },
     "definitions": {
-        "dto.CountDTO": {
-            "type": "object",
-            "properties": {
-                "arrivedSoon": {
-                    "type": "integer"
-                },
-                "delay": {
-                    "type": "integer"
-                },
-                "onTheWay": {
-                    "type": "integer"
-                }
-            }
-        },
-        "entity.Container": {
-            "type": "object",
-            "properties": {
-                "id_container": {
-                    "type": "integer"
-                },
-                "id_rts": {
+      "dto.BodyListReceipt": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "dto.CountDTO": {
+        "type": "object",
+        "properties": {
+          "arrivedSoon": {
+            "type": "integer"
+          },
+          "delay": {
+            "type": "integer"
+          },
+          "onTheWay": {
+            "type": "integer"
+          }
+        }
+      },
+      "dto.ReceiptListResultDTO": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "receipt": {},
+          "total": {
+            "type": "integer"
+          },
+          "totalPage": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "entity.Container": {
+        "type": "object",
+        "properties": {
+          "id_container": {
+            "type": "integer"
+          },
+          "id_rts": {
                     "type": "string"
                 },
                 "kode": {
@@ -225,18 +300,14 @@
         "helper.Response": {
             "type": "object",
             "properties": {
-                "data": {
-                    "type": "object"
-                },
-                "errors": {
-                    "type": "object"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean"
-                }
+              "data": {},
+              "errors": {},
+              "message": {
+                "type": "string"
+              },
+              "status": {
+                "type": "boolean"
+              }
             }
         }
     }

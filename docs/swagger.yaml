@@ -1,4 +1,13 @@
 definitions:
+  dto.BodyListReceipt:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      status:
+        type: string
+    type: object
   dto.CountDTO:
     properties:
       arrivedSoon:
@@ -7,6 +16,18 @@ definitions:
         type: integer
       onTheWay:
         type: integer
+    type: object
+  dto.ReceiptListResultDTO:
+    properties:
+      page:
+        type: integer
+      receipt: { }
+      total:
+        type: integer
+      totalPage:
+        type: integer
+      type:
+        type: string
     type: object
   entity.Container:
     properties:
@@ -99,10 +120,8 @@ definitions:
     type: object
   helper.Response:
     properties:
-      data:
-        type: object
-      errors:
-        type: object
+      data: { }
+      errors: { }
       message:
         type: string
       status:
@@ -137,16 +156,41 @@ paths:
       - application/json
       description: Count Receipt Sea
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.CountDTO'
-              type: object
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    $ref: '#/definitions/dto.CountDTO'
+                type: object
+      summary: All example
+  /list:
+    get:
+      consumes:
+        - application/json
+      description: Receipt List
+      parameters:
+        - description: List
+          in: body
+          name: List
+          required: true
+          schema:
+            $ref: '#/definitions/dto.BodyListReceipt'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    $ref: '#/definitions/dto.ReceiptListResultDTO'
+                type: object
       summary: All example
 swagger: "2.0"
