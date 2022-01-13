@@ -12,7 +12,7 @@ type ReceiptSeaRepository interface {
 	AllReceiptSea() []entity.Resi
 	FindReceiptSeaByNumber(resiID string) entity.Resi
 	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
-	List(b dto.BodyListReceipt) dto.ReceiptListResultDTO
+	List(page int64, limit int64, status string) dto.ReceiptListResultDTO
 }
 
 type receiptSeaConnection struct {
@@ -55,31 +55,31 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 	return cd
 }
 
-func (db *receiptSeaConnection) List(b dto.BodyListReceipt) dto.ReceiptListResultDTO {
+func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto.ReceiptListResultDTO {
 	var giw entity.Giw
 	var receiptList []dto.ReceiptList
 	var countList int64
 
-	if b.Status == "arrivedSoon" {
-		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'"+b.Status+"'as status").
+	if status == "arrivedSoon" {
+		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'"+status+"'as status").
 			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 			Where("container.status = ?", 4).
-			Count(&countList).Scopes(helper.Paginate(b)).Find(&receiptList)
-	} else if b.Status == "delay" {
-		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'" + b.Status + "'as status").
+			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
+	} else if status == "delay" {
+		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'" + status + "'as status").
 			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 			Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").
 			Where("(container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").
-			Count(&countList).Scopes(helper.Paginate(b)).Find(&receiptList)
+			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	}
 
 	results := dto.ReceiptListResultDTO{
 		Total:     countList,
-		Page:      int64(b.Page),
-		TotalPage: countList / int64(b.Limit),
-		Type:      b.Status,
+		Page:      page,
+		TotalPage: countList / limit,
+		Type:      status,
 		Receipt:   receiptList,
 	}
 

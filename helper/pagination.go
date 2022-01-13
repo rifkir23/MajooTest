@@ -1,30 +1,28 @@
 package helper
 
 import (
-	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
-
 	"gorm.io/gorm"
 )
 
 type Pagination interface {
-	Paginate(b dto.BodyListReceipt) *gorm.DB
+	Paginate(page int64, limit int64) *gorm.DB
 }
 
-func Paginate(b dto.BodyListReceipt) func(db *gorm.DB) *gorm.DB {
+func PaginateReceipt(page int64, limit int64) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 
-		page := b.Page
+		page := page
 		if page == 0 {
 			page = 1
 		}
 
-		pageSize := b.Limit
+		pageSize := limit
 		switch {
 		case pageSize <= 0:
 			pageSize = 10
 		}
 
 		offset := (page - 1) * pageSize
-		return db.Offset(offset).Limit(pageSize)
+		return db.Offset(int(offset)).Limit(int(pageSize))
 	}
 }

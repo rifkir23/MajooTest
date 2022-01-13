@@ -6,6 +6,7 @@ import (
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"github.com/wilopo-cargo/microservice-receipt-sea/service"
 	"net/http"
+	"strconv"
 )
 
 //ReceiptSeaController is a ...
@@ -82,10 +83,16 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 // @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
 // @Router /list [GET]
 func (c *receiptSeaController) List(context *gin.Context) {
-	var pagination dto.BodyListReceipt
-	context.BindJSON(&pagination)
+	page, err := strconv.ParseInt(context.Param("page"), 0, 0)
+	limit, err := strconv.ParseInt(context.Param("limit"), 0, 0)
+	status := context.Param("status")
+	if err != nil {
+		res := helper.BuildErrorResponse("No param id was found", err.Error(), helper.EmptyObj{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
 
-	var receipts = c.receiptSeaService.List(pagination)
+	var receipts = c.receiptSeaService.List(page, limit, status)
 	res := helper.BuildResponse(true, "OK", receipts)
 	context.JSON(http.StatusOK, res)
 }
