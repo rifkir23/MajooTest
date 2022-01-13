@@ -13,8 +13,7 @@ type ReceiptSeaController interface {
 	All(context *gin.Context)
 	FindByNumber(context *gin.Context)
 	Count(context *gin.Context)
-	Delay(context *gin.Context)
-	ArrivedSoon(context *gin.Context)
+	List(context *gin.Context)
 }
 
 type receiptSeaController struct {
@@ -83,16 +82,11 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 	context.JSON(http.StatusOK, res)
 }
 
-func (c *receiptSeaController) Delay(context *gin.Context) {
-	var delayDto dto.DelayDTO
-	var receipts = c.receiptSeaService.Delay(delayDto)
-	res := helper.BuildResponse(true, "OK", receipts)
-	context.JSON(http.StatusOK, res)
-}
+func (c *receiptSeaController) List(context *gin.Context) {
+	var pagination dto.BodyListReceipt
+	context.BindJSON(&pagination)
 
-func (c *receiptSeaController) ArrivedSoon(context *gin.Context) {
-	var arrivedSoonDto dto.ArrivedSoonDTO
-	var receipts = c.receiptSeaService.ArrivedSoon(arrivedSoonDto)
+	var receipts = c.receiptSeaService.List(pagination)
 	res := helper.BuildResponse(true, "OK", receipts)
 	context.JSON(http.StatusOK, res)
 }

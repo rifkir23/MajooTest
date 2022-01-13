@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/entity"
+	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"gorm.io/gorm"
 )
 
@@ -11,8 +12,7 @@ type ReceiptSeaRepository interface {
 	AllReceiptSea() []entity.Resi
 	FindReceiptSeaByNumber(resiID string) entity.Resi
 	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
-	Delay(dto.DelayDTO) dto.DelayDTO
-	ArrivedSoon(dto.ArrivedSoonDTO) dto.ArrivedSoonDTO
+	List(b dto.BodyListReceipt) dto.ReceiptListResultDTO
 }
 
 type receiptSeaConnection struct {
@@ -55,41 +55,32 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 	return cd
 }
 
-func (db *receiptSeaConnection) Delay(dto.DelayDTO) dto.DelayDTO {
+func (db *receiptSeaConnection) List(b dto.BodyListReceipt) dto.ReceiptListResultDTO {
 	var giw entity.Giw
-	var receiptsDelay []dto.ReceiptDelayListDTO
-	var countDelay int64
-	db.connection.Model(&giw).Raw("SELECT id_resi,resi.tanggal,resi.nomor FROM giw " +
-		"LEFT JOIN resi on giw.resi_id = resi.id_resi " +
-		"LEFT JOIN container on giw.container_id = container.id_rts " +
-		"LEFT JOIN delay on container.id_rts = delay.id_container_rts " +
-		"WHERE (container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").Limit(10).Find(&receiptsDelay).Count(&countDelay)
-	results := dto.DelayDTO{
-		Total:     10,
-		Page:      10,
-		TotalPage: countDelay,
-		Type:      "Delay",
-		Receipt:   receiptsDelay,
+	var receiptList []dto.ReceiptList
+	var countList int64
+
+	if b.Status == "arrivedSoon" {
+		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'"+b.Status+"'as status").
+			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
+			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
+			Where("container.status = ?", 4).
+			Count(&countList).Scopes(helper.Paginate(b)).Find(&receiptList)
+	} else if b.Status == "delay" {
+		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'" + b.Status + "'as status").
+			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
+			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
+			Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").
+			Where("(container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").
+			Count(&countList).Scopes(helper.Paginate(b)).Find(&receiptList)
 	}
 
-	return results
-}
-
-func (db *receiptSeaConnection) ArrivedSoon(dto.ArrivedSoonDTO) dto.ArrivedSoonDTO {
-	var giw entity.Giw
-	var receiptsArrivedSoon []dto.ReceiptArrivedSoonDTO
-	var countArrivedSoon int64
-	db.connection.Model(&giw).Raw("SELECT id_resi,resi.tanggal,resi.nomor FROM giw " +
-		"LEFT JOIN resi on giw.resi_id = resi.id_resi " +
-		"LEFT JOIN container on giw.container_id = container.id_rts " +
-		"LEFT JOIN delay on container.id_rts = delay.id_container_rts " +
-		"WHERE container.status = 4 limit 10").Find(&receiptsArrivedSoon).Count(&countArrivedSoon)
-	results := dto.ArrivedSoonDTO{
-		Total:     10,
-		Page:      10,
-		TotalPage: countArrivedSoon,
-		Type:      "ArrivedSoon",
-		Receipt:   receiptsArrivedSoon,
+	results := dto.ReceiptListResultDTO{
+		Total:     countList,
+		Page:      int64(b.Page),
+		TotalPage: countList / int64(b.Limit),
+		Type:      b.Status,
+		Receipt:   receiptList,
 	}
 
 	return results
