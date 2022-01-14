@@ -90,7 +90,7 @@ var doc = `{
                 }
             }
         },
-        "/list/{pages}/{limit}/{status}": {
+        "/list": {
             "get": {
                 "description": "Receipt List",
                 "consumes": [
@@ -104,20 +104,20 @@ var doc = `{
                     {
                         "type": "integer",
                         "description": "Pages",
-                        "name": "pages",
-                        "in": "path"
+                        "name": "page",
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "Limit",
                         "name": "limit",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Status",
                         "name": "status",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {

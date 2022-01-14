@@ -79,15 +79,15 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 // @Description Receipt List
 // @Accept json
 // @Produce json
-// @Param List pages  path int  false  "Pages"
-// @Param List limit  path int  false  "Limit"
-// @Param List status path  string  false  "Status"
+// @Param List page  query int  false  "Pages"
+// @Param List limit  query int  false  "Limit"
+// @Param List status query  string  false  "Status"
 // @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
-// @Router /list/{pages}/{limit}/{status} [GET]
+// @Router /list [GET]
 func (c *receiptSeaController) List(context *gin.Context) {
-	page, err := strconv.ParseInt(context.Param("page"), 0, 0)
-	limit, err := strconv.ParseInt(context.Param("limit"), 0, 0)
-	status := context.Param("status")
+	page, err := strconv.ParseInt(context.Query("page"), 0, 0)
+	limit, err := strconv.ParseInt(context.Query("limit"), 0, 0)
+	status := context.Query("status")
 	if err != nil {
 		res := helper.BuildErrorResponse("No param int was found", err.Error(), helper.EmptyObj{})
 		context.AbortWithStatusJSON(http.StatusBadRequest, res)

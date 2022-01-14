@@ -159,22 +159,22 @@ paths:
                     $ref: '#/definitions/dto.CountDTO'
                 type: object
       summary: All example
-  /list/{pages}/{limit}/{status}:
+  /list:
     get:
       consumes:
         - application/json
       description: Receipt List
       parameters:
         - description: Pages
-          in: path
-          name: pages
+          in: query
+          name: page
           type: integer
         - description: Limit
-          in: path
+          in: query
           name: limit
           type: integer
         - description: Status
-          in: path
+          in: query
           name: status
           type: string
       produces:
