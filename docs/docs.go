@@ -90,7 +90,7 @@ var doc = `{
                 }
             }
         },
-        "/list": {
+        "/list/{pages}/{limit}/{status}": {
             "get": {
                 "description": "Receipt List",
                 "consumes": [
@@ -102,13 +102,22 @@ var doc = `{
                 "summary": "All example",
                 "parameters": [
                     {
-                        "description": "List",
-                        "name": "List",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.BodyListReceipt"
-                        }
+                        "type": "integer",
+                        "description": "Pages",
+                        "name": "pages",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -135,20 +144,6 @@ var doc = `{
         }
     },
     "definitions": {
-        "dto.BodyListReceipt": {
-            "type": "object",
-            "properties": {
-                "limit": {
-                    "type": "integer"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.CountDTO": {
             "type": "object",
             "properties": {

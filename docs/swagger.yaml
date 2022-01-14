@@ -1,13 +1,4 @@
 definitions:
-  dto.BodyListReceipt:
-    properties:
-      limit:
-        type: integer
-      page:
-        type: integer
-      status:
-        type: string
-    type: object
   dto.CountDTO:
     properties:
       arrivedSoon:
@@ -168,18 +159,24 @@ paths:
                     $ref: '#/definitions/dto.CountDTO'
                 type: object
       summary: All example
-  /list:
+  /list/{pages}/{limit}/{status}:
     get:
       consumes:
         - application/json
       description: Receipt List
       parameters:
-        - description: List
-          in: body
-          name: List
-          required: true
-          schema:
-            $ref: '#/definitions/dto.BodyListReceipt'
+        - description: Pages
+          in: path
+          name: pages
+          type: integer
+        - description: Limit
+          in: path
+          name: limit
+          type: integer
+        - description: Status
+          in: path
+          name: status
+          type: string
       produces:
         - application/json
       responses:

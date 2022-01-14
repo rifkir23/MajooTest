@@ -79,9 +79,11 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 // @Description Receipt List
 // @Accept json
 // @Produce json
-// @Param List body dto.BodyListReceipt true "List"
+// @Param List pages  path int  false  "Pages"
+// @Param List limit  path int  false  "Limit"
+// @Param List status path  string  false  "Status"
 // @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
-// @Router /list [GET]
+// @Router /list/{pages}/{limit}/{status} [GET]
 func (c *receiptSeaController) List(context *gin.Context) {
 	page, err := strconv.ParseInt(context.Param("page"), 0, 0)
 	limit, err := strconv.ParseInt(context.Param("limit"), 0, 0)

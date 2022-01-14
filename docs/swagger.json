@@ -54,9 +54,9 @@
                         "description": "OK",
                         "schema": {
                             "allOf": [
-                                {
-                                  "$ref": "#/definitions/helper.Response"
-                                },
+                              {
+                                "$ref": "#/definitions/helper.Response"
+                              },
                               {
                                 "type": "object",
                                 "properties": {
@@ -71,7 +71,7 @@
                 }
             }
         },
-      "/list": {
+      "/list/{pages}/{limit}/{status}": {
         "get": {
           "description": "Receipt List",
           "consumes": [
@@ -83,13 +83,22 @@
           "summary": "All example",
           "parameters": [
             {
-              "description": "List",
-              "name": "List",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/dto.BodyListReceipt"
-              }
+              "type": "integer",
+              "description": "Pages",
+              "name": "pages",
+              "in": "path"
+            },
+            {
+              "type": "integer",
+              "description": "Limit",
+              "name": "limit",
+              "in": "path"
+            },
+            {
+              "type": "string",
+              "description": "Status",
+              "name": "status",
+              "in": "path"
             }
           ],
           "responses": {
@@ -116,20 +125,6 @@
       }
     },
     "definitions": {
-      "dto.BodyListReceipt": {
-        "type": "object",
-        "properties": {
-          "limit": {
-            "type": "integer"
-          },
-          "page": {
-            "type": "integer"
-          },
-          "status": {
-            "type": "string"
-          }
-        }
-      },
       "dto.CountDTO": {
         "type": "object",
         "properties": {
@@ -169,16 +164,16 @@
             "type": "integer"
           },
           "id_rts": {
-                    "type": "string"
-                },
-                "kode": {
-                    "type": "string"
-                },
-                "nomor": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
+            "type": "string"
+          },
+          "kode": {
+            "type": "string"
+          },
+          "nomor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
                 },
                 "tanggal_arrived_c": {
                     "type": "string"
