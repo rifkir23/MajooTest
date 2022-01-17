@@ -218,25 +218,14 @@ var doc = `{
         "dto.ReceiptListResultDTO": {
             "type": "object",
             "properties": {
-                "page": {
-                    "type": "integer"
-                },
-                "receipt": {},
-                "total": {
-                    "type": "integer"
-                },
-                "totalPage": {
-                    "type": "integer"
-                },
-                "type": {
-                    "type": "string"
-                }
+                "pagination": {},
+                "receipt": {}
             }
         },
         "dto.ReceiptNumber": {
             "type": "object",
             "properties": {
-                "receipt_sea_number": {
+                "receiptSeaNumber": {
                     "type": "string"
                 }
             }

@@ -2,7 +2,7 @@ package dto
 
 /*Handle Json*/
 type ReceiptNumber struct {
-	ReceiptSeaNumber string `json:"receipt_sea_number"`
+	ReceiptSeaNumber string `json:"receiptSeaNumber"`
 }
 
 /*Receipt Sea Response*/

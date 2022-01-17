@@ -23,7 +23,7 @@
                                     "$ref": "#/definitions/helper.Response"
                                 },
                                 {
-                                    "type": "object",
+                                  "type": "object",
                                   "properties": {
                                     "data": {
                                       "type": "array",
@@ -87,31 +87,31 @@
           "description": "Count Receipt Sea",
           "consumes": [
             "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "All example",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                              {
-                                "$ref": "#/definitions/helper.Response"
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "data": {
-                                    "$ref": "#/definitions/dto.CountDTO"
-                                  }
-                                }
-                              }
-                            ]
-                        }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "summary": "All example",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/helper.Response"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/definitions/dto.CountDTO"
+                      }
                     }
-                }
+                  }
+                ]
+              }
+            }
+          }
         }
       },
       "/list": {
@@ -199,25 +199,14 @@
       "dto.ReceiptListResultDTO": {
         "type": "object",
         "properties": {
-          "page": {
-            "type": "integer"
-          },
-          "receipt": {},
-          "total": {
-            "type": "integer"
-          },
-          "totalPage": {
-            "type": "integer"
-          },
-          "type": {
-            "type": "string"
-          }
+          "pagination": {},
+          "receipt": {}
         }
       },
       "dto.ReceiptNumber": {
         "type": "object",
         "properties": {
-          "receipt_sea_number": {
+          "receiptSeaNumber": {
             "type": "string"
           }
         }
@@ -259,16 +248,16 @@
             "type": "string"
           },
           "tgl_est_dumai": {
-                    "type": "string"
-                },
-                "tgl_eta": {
-                    "type": "string"
-                },
-                "tgl_loading": {
-                    "type": "string"
-                },
-                "tgl_notul": {
-                    "type": "string"
+            "type": "string"
+          },
+          "tgl_eta": {
+            "type": "string"
+          },
+          "tgl_loading": {
+            "type": "string"
+          },
+          "tgl_notul": {
+            "type": "string"
                 },
                 "tgl_pib": {
                     "type": "string"

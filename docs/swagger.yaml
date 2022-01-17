@@ -19,19 +19,12 @@ definitions:
     type: object
   dto.ReceiptListResultDTO:
     properties:
-      page:
-        type: integer
+      pagination: { }
       receipt: { }
-      total:
-        type: integer
-      totalPage:
-        type: integer
-      type:
-        type: string
     type: object
   dto.ReceiptNumber:
     properties:
-      receipt_sea_number:
+      receiptSeaNumber:
         type: string
     type: object
   entity.Container:
