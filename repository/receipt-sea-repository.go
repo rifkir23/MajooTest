@@ -77,18 +77,27 @@ func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	}
 
-	//if (page - 1) > 0 {
-	//	pagination.PrevPage = page - 1
-	//}
+	/*Current Page*/
+	if page >= (countList / limit) {
+		pagination.CurrentPage = countList / limit
+	} else {
+		pagination.CurrentPage = page
+	}
+	/*Prev Page*/
+	if (page-1) > 0 && (countList/limit) > 0 {
+		if page >= (countList / limit) {
+			pagination.PrevPage = pagination.CurrentPage - 1
+		} else {
+			pagination.PrevPage = page - 1
+		}
+	}
+	/*Next Page*/
 	if (page + 1) < (countList / limit) {
 		pagination.NextPage = page + 1
 	} else {
-		pagination.NextPage = countList / limit
+		pagination.NextPage = 0
 	}
 	pagination.TotalElement = countList
-	pagination.CurrentPage = page
-	pagination.NextPage = page + 1
-	pagination.PrevPage = page - 1
 	pagination.TotalPage = countList / limit
 
 	results := dto.ReceiptListResultDTO{
