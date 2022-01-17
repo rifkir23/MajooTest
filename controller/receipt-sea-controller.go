@@ -15,6 +15,7 @@ type ReceiptSeaController interface {
 	FindByNumber(context *gin.Context)
 	Count(context *gin.Context)
 	List(context *gin.Context)
+	ReceiptByContainer(context *gin.Context)
 }
 
 type receiptSeaController struct {
@@ -45,10 +46,10 @@ func (c *receiptSeaController) All(context *gin.Context) {
 }
 
 func (c *receiptSeaController) FindByNumber(context *gin.Context) {
-	var receiptSeaJson dto.ReceiptSeaJson
-	context.BindJSON(&receiptSeaJson)
+	var receiptNumber dto.ReceiptNumber
+	context.BindJSON(&receiptNumber)
 
-	var receipt_sea = c.receiptSeaService.FindByNumber(receiptSeaJson.ReceiptSeaNumber)
+	var receipt_sea = c.receiptSeaService.FindByNumber(receiptNumber.ReceiptSeaNumber)
 	//if (receipt_sea == entity.Resi{}) {
 	//	res := helper.BuildErrorResponse("Data Not Found", "No data with given id", helper.EmptyObj{})
 	//	context.JSON(http.StatusNotFound, res)
@@ -96,5 +97,23 @@ func (c *receiptSeaController) List(context *gin.Context) {
 
 	var receipts = c.receiptSeaService.List(page, limit, status)
 	res := helper.BuildResponse(true, "OK", receipts)
+	context.JSON(http.StatusOK, res)
+}
+
+// ReceiptByContainer godoc
+// @Summary All example
+// @Schemes
+// @Description Receipt By Container
+// @Accept json
+// @Produce json
+// @Param ReceiptByContainer body dto.ReceiptNumber true "ReceiptByContainer"
+// @Success 200 {object} helper.Response{data=dto.ContainerByReceiptDTO}
+// @Router /container-by-receipt [POST]
+func (c *receiptSeaController) ReceiptByContainer(context *gin.Context) {
+	var receiptNumber dto.ReceiptNumber
+	context.BindJSON(&receiptNumber)
+
+	var receipt_sea = c.receiptSeaService.ReceiptByContainer(receiptNumber.ReceiptSeaNumber)
+	res := helper.BuildResponse(true, "OK", receipt_sea)
 	context.JSON(http.StatusOK, res)
 }

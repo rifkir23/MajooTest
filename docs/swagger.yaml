@@ -1,4 +1,13 @@
 definitions:
+  dto.ContainerByReceiptDTO:
+    properties:
+      containerID:
+        type: integer
+      receiptID:
+        type: integer
+      status:
+        type: string
+    type: object
   dto.CountDTO:
     properties:
       arrivedSoon:
@@ -18,6 +27,11 @@ definitions:
       totalPage:
         type: integer
       type:
+        type: string
+    type: object
+  dto.ReceiptNumber:
+    properties:
+      receipt_sea_number:
         type: string
     type: object
   entity.Container:
@@ -133,18 +147,43 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/entity.Resi'
-                  type: array
-              type: object
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/entity.Resi'
+                    type: array
+                type: object
+      summary: All example
+  /container-by-receipt:
+    post:
+      consumes:
+        - application/json
+      description: Receipt By Container
+      parameters:
+        - description: ReceiptByContainer
+          in: body
+          name: ReceiptByContainer
+          required: true
+          schema:
+            $ref: '#/definitions/dto.ReceiptNumber'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    $ref: '#/definitions/dto.ContainerByReceiptDTO'
+                type: object
       summary: All example
   /count:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Count Receipt Sea
       produces:
         - application/json

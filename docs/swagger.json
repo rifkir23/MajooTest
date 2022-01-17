@@ -24,14 +24,14 @@
                                 },
                                 {
                                     "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.Resi"
-                                            }
-                                        }
+                                  "properties": {
+                                    "data": {
+                                      "type": "array",
+                                      "items": {
+                                        "$ref": "#/definitions/entity.Resi"
+                                      }
                                     }
+                                  }
                                 }
                             ]
                         }
@@ -39,11 +39,54 @@
                 }
             }
         },
-        "/count": {
-            "get": {
-                "description": "Count Receipt Sea",
-                "consumes": [
-                    "application/json"
+      "/container-by-receipt": {
+        "post": {
+          "description": "Receipt By Container",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "summary": "All example",
+          "parameters": [
+            {
+              "description": "ReceiptByContainer",
+              "name": "ReceiptByContainer",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/dto.ReceiptNumber"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/helper.Response"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/definitions/dto.ContainerByReceiptDTO"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "/count": {
+        "get": {
+          "description": "Count Receipt Sea",
+          "consumes": [
+            "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -69,8 +112,8 @@
                         }
                     }
                 }
-            }
-        },
+        }
+      },
       "/list": {
         "get": {
           "description": "Receipt List",
@@ -125,6 +168,20 @@
       }
     },
     "definitions": {
+      "dto.ContainerByReceiptDTO": {
+        "type": "object",
+        "properties": {
+          "containerID": {
+            "type": "integer"
+          },
+          "receiptID": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
       "dto.CountDTO": {
         "type": "object",
         "properties": {
@@ -157,6 +214,14 @@
           }
         }
       },
+      "dto.ReceiptNumber": {
+        "type": "object",
+        "properties": {
+          "receipt_sea_number": {
+            "type": "string"
+          }
+        }
+      },
       "entity.Container": {
         "type": "object",
         "properties": {
@@ -184,16 +249,16 @@
           "tanggal_monitoring_c": {
             "type": "string"
           },
-                "tgl_antri_kapal": {
-                    "type": "string"
-                },
-                "tgl_atur_kapal": {
-                    "type": "string"
-                },
-                "tgl_closing": {
-                    "type": "string"
-                },
-                "tgl_est_dumai": {
+          "tgl_antri_kapal": {
+            "type": "string"
+          },
+          "tgl_atur_kapal": {
+            "type": "string"
+          },
+          "tgl_closing": {
+            "type": "string"
+          },
+          "tgl_est_dumai": {
                     "type": "string"
                 },
                 "tgl_eta": {

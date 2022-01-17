@@ -58,6 +58,49 @@ var doc = `{
                 }
             }
         },
+        "/container-by-receipt": {
+            "post": {
+                "description": "Receipt By Container",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "description": "ReceiptByContainer",
+                        "name": "ReceiptByContainer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReceiptNumber"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ContainerByReceiptDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/count": {
             "get": {
                 "description": "Count Receipt Sea",
@@ -144,6 +187,20 @@ var doc = `{
         }
     },
     "definitions": {
+        "dto.ContainerByReceiptDTO": {
+            "type": "object",
+            "properties": {
+                "containerID": {
+                    "type": "integer"
+                },
+                "receiptID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CountDTO": {
             "type": "object",
             "properties": {
@@ -172,6 +229,14 @@ var doc = `{
                     "type": "integer"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ReceiptNumber": {
+            "type": "object",
+            "properties": {
+                "receipt_sea_number": {
                     "type": "string"
                 }
             }

@@ -13,6 +13,7 @@ type ReceiptSeaRepository interface {
 	FindReceiptSeaByNumber(resiID string) entity.Resi
 	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
 	List(page int64, limit int64, status string) dto.ReceiptListResultDTO
+	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
 }
 
 type receiptSeaConnection struct {
@@ -84,4 +85,17 @@ func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto
 	}
 
 	return results
+}
+
+func (db *receiptSeaConnection) ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO {
+	var giw entity.Giw
+	var receipt_by_container_list []dto.ContainerByReceiptDTO
+	db.connection.Model(&giw).
+		Select("giw.container_id,resi.id_resi,status_giw.status").
+		Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
+		Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
+		Joins("LEFT JOIN status_giw on container.status = status_giw.id ").
+		Where("resi.nomor = ?", resiNumber).Group("giw.container_id").Find(&receipt_by_container_list)
+
+	return receipt_by_container_list
 }

@@ -12,6 +12,7 @@ type ReceiptSeaService interface {
 	FindByNumber(resiNumber string) entity.Resi
 	Count(cd dto.CountDTO) dto.CountDTO
 	List(page int64, limit int64, status string) dto.ReceiptListResultDTO
+	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
 }
 
 type receiptSeaService struct {
@@ -39,4 +40,8 @@ func (service *receiptSeaService) Count(cd dto.CountDTO) dto.CountDTO {
 
 func (service *receiptSeaService) List(page int64, limit int64, status string) dto.ReceiptListResultDTO {
 	return service.receiptSeaRepository.List(page, limit, status)
+}
+
+func (service *receiptSeaService) ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO {
+	return service.receiptSeaRepository.ReceiptByContainer(resiNumber)
 }
