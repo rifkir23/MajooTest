@@ -218,8 +218,8 @@ var doc = `{
         "dto.ReceiptListResultDTO": {
             "type": "object",
             "properties": {
-                "pagination": {},
-                "receipt": {}
+                "content": {},
+                "pagination": {}
             }
         },
         "dto.ReceiptNumber": {

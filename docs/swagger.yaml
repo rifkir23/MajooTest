@@ -19,8 +19,8 @@ definitions:
     type: object
   dto.ReceiptListResultDTO:
     properties:
+      content: { }
       pagination: { }
-      receipt: { }
     type: object
   dto.ReceiptNumber:
     properties:

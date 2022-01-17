@@ -28,7 +28,7 @@ type ReceiptList struct {
 /*Receipt list*/
 type ReceiptListResultDTO struct {
 	Pagination interface{} `json:"pagination"`
-	Receipt    interface{} `json:"receipt"`
+	Receipt    interface{} `json:"content"`
 }
 
 type Pagination struct {

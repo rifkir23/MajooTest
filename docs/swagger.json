@@ -199,8 +199,8 @@
       "dto.ReceiptListResultDTO": {
         "type": "object",
         "properties": {
-          "pagination": {},
-          "receipt": {}
+          "content": {},
+          "pagination": {}
         }
       },
       "dto.ReceiptNumber": {
@@ -258,16 +258,16 @@
           },
           "tgl_notul": {
             "type": "string"
-                },
-                "tgl_pib": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Giw": {
-            "type": "object",
-            "properties": {
-                "barang": {
+          },
+          "tgl_pib": {
+            "type": "string"
+          }
+        }
+      },
+      "entity.Giw": {
+        "type": "object",
+        "properties": {
+          "barang": {
                     "type": "string"
                 },
                 "berat": {
