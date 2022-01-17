@@ -59,6 +59,7 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto.ReceiptListResultDTO {
 	var giw entity.Giw
 	var receiptList []dto.ReceiptList
+	var pagination dto.Pagination
 	var countList int64
 
 	if status == "arrivedSoon" {
@@ -76,12 +77,23 @@ func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	}
 
+	//if (page - 1) > 0 {
+	//	pagination.PrevPage = page - 1
+	//}
+	if (page + 1) < (countList / limit) {
+		pagination.NextPage = page + 1
+	} else {
+		pagination.NextPage = countList / limit
+	}
+	pagination.TotalElement = countList
+	pagination.CurrentPage = page
+	pagination.NextPage = page + 1
+	pagination.PrevPage = page - 1
+	pagination.TotalPage = countList / limit
+
 	results := dto.ReceiptListResultDTO{
-		Total:     countList,
-		Page:      page,
-		TotalPage: countList / limit,
-		Type:      status,
-		Receipt:   receiptList,
+		Pagination: pagination,
+		Receipt:    receiptList,
 	}
 
 	return results

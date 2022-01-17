@@ -27,11 +27,16 @@ type ReceiptList struct {
 
 /*Receipt list*/
 type ReceiptListResultDTO struct {
-	Total     int64       `json:"total"`
-	Page      int64       `json:"page"`
-	TotalPage int64       `json:"totalPage"`
-	Type      string      `json:"type"`
-	Receipt   interface{} `json:"receipt"`
+	Pagination interface{} `json:"pagination"`
+	Receipt    interface{} `json:"receipt"`
+}
+
+type Pagination struct {
+	TotalElement int64 `json:"totalElement"`
+	CurrentPage  int64 `json:"currentPage"`
+	NextPage     int64 `json:"nextPage"`
+	PrevPage     int64 `json:"prevPage"`
+	TotalPage    int64 `json:"totalPage"`
 }
 
 /*Receipt by Container*/
