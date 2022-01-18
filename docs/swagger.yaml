@@ -72,6 +72,8 @@ definitions:
         $ref: '#/definitions/entity.Container'
       container_id:
         type: integer
+      ctns:
+        type: integer
       harga:
         type: number
       harga_jual:
@@ -86,13 +88,11 @@ definitions:
         type: string
       note:
         type: string
+      qty:
+        type: integer
       remarks:
         type: string
       resi_id:
-        type: integer
-      supplier:
-        type: integer
-      tel:
         type: integer
       volume:
         type: string
@@ -103,7 +103,11 @@ definitions:
         items:
           $ref: '#/definitions/entity.Giw'
         type: array
+      gudang:
+        type: integer
       id_resi:
+        type: integer
+      id_resi_rts:
         type: integer
       konfirmasi_resi:
         type: string
@@ -189,6 +193,33 @@ paths:
               - properties:
                   data:
                     $ref: '#/definitions/dto.CountDTO'
+                type: object
+      summary: All example
+  /detail:
+    get:
+      consumes:
+        - application/json
+      description: Receipt Detail
+      parameters:
+        - description: ReceiptId
+          in: query
+          name: receiptId
+          type: integer
+        - description: ContainerId
+          in: query
+          name: containerId
+          type: integer
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    $ref: '#/definitions/dto.ReceiptListResultDTO'
                 type: object
       summary: All example
   /list:

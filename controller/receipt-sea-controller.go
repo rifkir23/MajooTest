@@ -60,6 +60,16 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 	context.JSON(http.StatusOK, res)
 }
 
+// Detail godoc
+// @Summary All example
+// @Schemes
+// @Description Receipt Detail
+// @Accept json
+// @Produce json
+// @Param Detail receiptId  query int  false  "ReceiptId"
+// @Param Detail containerId  query int  false  "ContainerId"
+// @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
+// @Router /detail [GET]
 func (c *receiptSeaController) Detail(context *gin.Context) {
 	receiptId, err := strconv.ParseInt(context.Query("receiptId"), 0, 0)
 	containerId, err := strconv.ParseInt(context.Query("containerId"), 0, 0)

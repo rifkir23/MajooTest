@@ -133,6 +133,52 @@ var doc = `{
                 }
             }
         },
+        "/detail": {
+            "get": {
+                "description": "Receipt Detail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ReceiptId",
+                        "name": "receiptId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ContainerId",
+                        "name": "containerId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/list": {
             "get": {
                 "description": "Receipt List",
@@ -298,6 +344,9 @@ var doc = `{
                 "container_id": {
                     "type": "integer"
                 },
+                "ctns": {
+                    "type": "integer"
+                },
                 "harga": {
                     "type": "number"
                 },
@@ -319,16 +368,13 @@ var doc = `{
                 "note": {
                     "type": "string"
                 },
+                "qty": {
+                    "type": "integer"
+                },
                 "remarks": {
                     "type": "string"
                 },
                 "resi_id": {
-                    "type": "integer"
-                },
-                "supplier": {
-                    "type": "integer"
-                },
-                "tel": {
                     "type": "integer"
                 },
                 "volume": {
@@ -345,7 +391,13 @@ var doc = `{
                         "$ref": "#/definitions/entity.Giw"
                     }
                 },
+                "gudang": {
+                    "type": "integer"
+                },
                 "id_resi": {
+                    "type": "integer"
+                },
+                "id_resi_rts": {
                     "type": "integer"
                 },
                 "konfirmasi_resi": {
