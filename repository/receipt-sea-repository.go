@@ -10,7 +10,7 @@ import (
 //ReceiptSeaRepository is a ....
 type ReceiptSeaRepository interface {
 	AllReceiptSea() []entity.Resi
-	FindReceiptSeaByNumber(resiID string) entity.Resi
+	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
 	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
 	List(page int64, limit int64, status string) dto.ReceiptListResultDTO
 	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
@@ -27,10 +27,30 @@ func NewReceiptSeaRepository(dbConn *gorm.DB) ReceiptSeaRepository {
 	}
 }
 
-func (db *receiptSeaConnection) FindReceiptSeaByNumber(resiNumber string) entity.Resi {
+func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult {
 	var receipt_sea entity.Resi
-	db.connection.Preload("Giws").Preload("Giws.Container").Where("nomor = ?", resiNumber).First(&receipt_sea)
-	return receipt_sea
+	var giw entity.Giw
+	var historyReceiptSea entity.ReceiptSeaHistory
+
+	var receiptDetail dto.ReceiptDetail
+	var barcodeDetail dto.BarcodeDetailReceipt
+	var barcodeList []dto.BarcodeList
+	var statusDetail []dto.StatusDetailReceipt
+	var receiptDetailResult dto.ReceiptDetailResult
+
+	db.connection.Model(&receipt_sea).Select("resi.id_resi_rts,resi.id_resi,konfirmasi_resi,'123/WC-tes' as MarkingCode,nomor,tanggal,tel,'081312345678' as WhatsappNumber,resi.note,gudang,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
+		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").First(&receiptDetail, receiptId)
+	db.connection.Model(&giw).Where("resi_id = ?", receiptId).Where("container_id = ?", containerId).Find(&barcodeList)
+	db.connection.Model(&giw).Select("sum(ctns) as TotalCartons,sum(qty*ctns) as TotalQty,round(sum(nilai*ctns),3) as TotalValue,round(sum(volume*ctns),3) as TotalVolume,round(sum(berat*ctns),3) as TotalWeight").
+		Where("resi_id = ?", receiptId).Where("container_id = ?", containerId).Group("resi_id").Find(&barcodeDetail)
+	db.connection.Model(&historyReceiptSea).Select("tanggal as Date,status_resi.nama as ProcessTitle,status_resi.keterangan as Description").Joins("LEFT JOIN status_resi on history_date_status.tipe_resi = status_resi.id").Where("resi_id = ?", receiptDetail.IDResiRts).Find(&statusDetail)
+
+	receiptDetailResult.ReceiptDetail = receiptDetail
+	barcodeDetail.BarcodeList = barcodeList
+	receiptDetailResult.BarcodeDetailReceipt = barcodeDetail
+	receiptDetailResult.StatusDetailReceipt = statusDetail
+
+	return receiptDetailResult
 }
 
 func (db *receiptSeaConnection) AllReceiptSea() []entity.Resi {

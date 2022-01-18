@@ -10,8 +10,8 @@ type Giw struct {
 	ContainerID uint    `json:"container_id"`
 	Nomor       string  `json:"nomor"`
 	Barang      string  `json:"barang"`
-	Ctns        int32   `json:"supplier"`
-	Qty         int32   `json:"tel"`
+	Ctns        int32   `json:"ctns"`
+	Qty         int32   `json:"qty"`
 	Berat       string  `json:"berat"`
 	Volume      string  `json:"volume"`
 	Nilai       string  `json:"nilai"`

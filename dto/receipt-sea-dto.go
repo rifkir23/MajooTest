@@ -45,3 +45,49 @@ type ContainerByReceiptDTO struct {
 	IDResi      int64  `json:"receiptID"`
 	Status      string `json:"status"`
 }
+
+type ReceiptDetailResult struct {
+	ReceiptDetail        interface{} `json:"Receipt"`
+	BarcodeDetailReceipt interface{} `json:"Barcode"`
+	StatusDetailReceipt  interface{} `json:"StatusList"`
+}
+
+type ReceiptDetail struct {
+	IDResi          uint64 `json:"id"`
+	IDResiRts       uint64 `json:"receipt_id_rts"`
+	KonfirmasiResi  string `json:"status"`
+	MarkingCode     string `json:"markingCode"`
+	Nomor           string `json:"receiptNumber"`
+	Tanggal         string `json:"date"`
+	Tel             string `json:"phoneNumber"`
+	WhatsappNumber  string `json:"whatsappNumber"`
+	Note            string `json:"note"`
+	Gudang          string `json:"warehouseLocation"`
+	InsuranceNumber string `json:"insuranceNumber"`
+}
+
+type BarcodeDetailReceipt struct {
+	TotalCartons string      `json:"totalCartons"`
+	TotalQty     string      `json:"totalQty"`
+	TotalValue   string      `json:"totalValue"`
+	TotalVolume  string      `json:"totalVolume"`
+	TotalWeight  string      `json:"totalWeight"`
+	BarcodeList  interface{} `json:"barcodeList"`
+}
+
+type BarcodeList struct {
+	ID        uint64  `json:"id"`
+	Nomor     string  `json:"barcode"`
+	Qty       string  `json:"qty"`
+	Nilai     string  `json:"value"`
+	Volume    string  `json:"volume"`
+	Berat     string  `json:"weight"`
+	HargaJual float64 `json:"sellingPrice"`
+}
+
+type StatusDetailReceipt struct {
+	//ID           uint64 `json:"id"`
+	Date         string `json:"date"`
+	ProcessTitle string `json:"processTitle"`
+	Description  string `json:"description"`
+}

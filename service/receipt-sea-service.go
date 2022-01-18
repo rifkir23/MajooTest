@@ -9,7 +9,7 @@ import (
 //ReceiptSeaService is a ....
 type ReceiptSeaService interface {
 	All() []entity.Resi
-	FindByNumber(resiNumber string) entity.Resi
+	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
 	Count(cd dto.CountDTO) dto.CountDTO
 	List(page int64, limit int64, status string) dto.ReceiptListResultDTO
 	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
@@ -30,8 +30,8 @@ func (service *receiptSeaService) All() []entity.Resi {
 	return service.receiptSeaRepository.AllReceiptSea()
 }
 
-func (service *receiptSeaService) FindByNumber(resiNumber string) entity.Resi {
-	return service.receiptSeaRepository.FindReceiptSeaByNumber(resiNumber)
+func (service *receiptSeaService) Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult {
+	return service.receiptSeaRepository.Detail(receiptId, containerId)
 }
 
 func (service *receiptSeaService) Count(cd dto.CountDTO) dto.CountDTO {

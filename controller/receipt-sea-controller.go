@@ -12,8 +12,8 @@ import (
 //ReceiptSeaController is a ...
 type ReceiptSeaController interface {
 	All(context *gin.Context)
-	FindByNumber(context *gin.Context)
 	Count(context *gin.Context)
+	Detail(context *gin.Context)
 	List(context *gin.Context)
 	ReceiptByContainer(context *gin.Context)
 }
@@ -45,20 +45,6 @@ func (c *receiptSeaController) All(context *gin.Context) {
 	context.JSON(http.StatusOK, res)
 }
 
-func (c *receiptSeaController) FindByNumber(context *gin.Context) {
-	var receiptNumber dto.ReceiptNumber
-	context.BindJSON(&receiptNumber)
-
-	var receipt_sea = c.receiptSeaService.FindByNumber(receiptNumber.ReceiptSeaNumber)
-	//if (receipt_sea == entity.Resi{}) {
-	//	res := helper.BuildErrorResponse("Data Not Found", "No data with given id", helper.EmptyObj{})
-	//	context.JSON(http.StatusNotFound, res)
-	//} else {
-	res := helper.BuildResponse(true, "OK", receipt_sea)
-	context.JSON(http.StatusOK, res)
-	//}
-}
-
 // Count godoc
 // @Summary All example
 // @Schemes
@@ -71,6 +57,21 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 	var countReceiptDTO dto.CountDTO
 	result := c.receiptSeaService.Count(countReceiptDTO)
 	res := helper.BuildResponse(true, "OK", result)
+	context.JSON(http.StatusOK, res)
+}
+
+func (c *receiptSeaController) Detail(context *gin.Context) {
+	receiptId, err := strconv.ParseInt(context.Query("receiptId"), 0, 0)
+	containerId, err := strconv.ParseInt(context.Query("containerId"), 0, 0)
+	if err != nil {
+		res := helper.BuildErrorResponse("No param int was found", err.Error(), helper.EmptyObj{})
+		context.AbortWithStatusJSON(http.StatusBadRequest, res)
+		return
+	}
+
+	var receipt_sea = c.receiptSeaService.Detail(receiptId, containerId)
+
+	res := helper.BuildResponse(true, "OK", receipt_sea)
 	context.JSON(http.StatusOK, res)
 }
 

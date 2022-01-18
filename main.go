@@ -27,16 +27,11 @@ func main() {
 	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
 
-	r.POST("/find", receiptSeaController.FindByNumber)
 	r.GET("/all", receiptSeaController.All)
 	r.GET("/count", receiptSeaController.Count)
+	r.GET("/detail", receiptSeaController.Detail)
 	r.GET("/list", receiptSeaController.List)
 	r.POST("/container-by-receipt", receiptSeaController.ReceiptByContainer)
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
 
 	docs.SwaggerInfo.BasePath = os.Getenv("SWAGGER_BASE_PATH")
 	v1 := r.Group("/v1")
