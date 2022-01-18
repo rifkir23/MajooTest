@@ -54,7 +54,7 @@ type ReceiptDetailResult struct {
 
 type ReceiptDetail struct {
 	IDResi          uint64 `json:"id"`
-	IDResiRts       uint64 `json:"receipt_id_rts"`
+	IDResiRts       uint64 `json:"receiptIdRts"`
 	KonfirmasiResi  string `json:"status"`
 	MarkingCode     string `json:"markingCode"`
 	Nomor           string `json:"receiptNumber"`
