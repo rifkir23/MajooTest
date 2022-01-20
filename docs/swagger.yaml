@@ -17,6 +17,11 @@ definitions:
       onTheWay:
         type: integer
     type: object
+  dto.ReceiptListByTypeResult:
+    properties:
+      content: { }
+      pagination: { }
+    type: object
   dto.ReceiptListResultDTO:
     properties:
       content: { }
@@ -251,6 +256,37 @@ paths:
               - properties:
                   data:
                     $ref: '#/definitions/dto.ReceiptListResultDTO'
+                type: object
+      summary: All example
+  /receipt/list:
+    get:
+      consumes:
+        - application/json
+      description: Receipt List
+      parameters:
+        - description: Pages
+          in: query
+          name: page
+          type: integer
+        - description: Limit
+          in: query
+          name: limit
+          type: integer
+        - description: receiptType
+          in: query
+          name: receiptType
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+              - $ref: '#/definitions/helper.Response'
+              - properties:
+                  data:
+                    $ref: '#/definitions/dto.ReceiptListByTypeResult'
                 type: object
       summary: All example
 swagger: "2.0"

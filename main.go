@@ -18,9 +18,12 @@ import (
 var (
 	db                   *gorm.DB                        = config.SetupDatabaseConnection()
 	receiptSeaRepository repository.ReceiptSeaRepository = repository.NewReceiptSeaRepository(db)
+	receiptRepository    repository.ReceiptRepository    = repository.NewReceiptRepository(db)
 	jwtService           service.JWTService              = service.NewJWTService()
 	receiptSeaService    service.ReceiptSeaService       = service.NewReceiptSeaService(receiptSeaRepository)
 	receiptSeaController controller.ReceiptSeaController = controller.NewReceiptSeaController(receiptSeaService, jwtService)
+	receiptService       service.ReceiptService          = service.NewReceiptService(receiptRepository)
+	receiptController    controller.ReceiptController    = controller.NewReceiptController(receiptService, jwtService)
 )
 
 func main() {
@@ -31,6 +34,7 @@ func main() {
 	r.GET("/count", receiptSeaController.Count)
 	r.GET("/detail", receiptSeaController.Detail)
 	r.GET("/list", receiptSeaController.List)
+	r.GET("/receipt/list", receiptController.List)
 	r.POST("/container-by-receipt", receiptSeaController.ReceiptByContainer)
 
 	docs.SwaggerInfo.BasePath = os.Getenv("SWAGGER_BASE_PATH")

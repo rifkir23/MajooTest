@@ -230,6 +230,58 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/receipt/list": {
+            "get": {
+                "description": "Receipt List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Pages",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "receiptType",
+                        "name": "receiptType",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListByTypeResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -259,6 +311,13 @@ var doc = `{
                 "onTheWay": {
                     "type": "integer"
                 }
+            }
+        },
+        "dto.ReceiptListByTypeResult": {
+            "type": "object",
+            "properties": {
+                "content": {},
+                "pagination": {}
             }
         },
         "dto.ReceiptListResultDTO": {
