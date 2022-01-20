@@ -47,9 +47,9 @@ type ContainerByReceiptDTO struct {
 }
 
 type ReceiptDetailResult struct {
-	ReceiptDetail        interface{} `json:"Receipt"`
-	BarcodeDetailReceipt interface{} `json:"Barcode"`
-	StatusDetailReceipt  interface{} `json:"StatusList"`
+	ReceiptDetail        interface{} `json:"receipt"`
+	BarcodeDetailReceipt interface{} `json:"barcode"`
+	StatusDetailReceipt  interface{} `json:"statusList"`
 }
 
 type ReceiptDetail struct {
