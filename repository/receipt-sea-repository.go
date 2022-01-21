@@ -179,7 +179,7 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 	var countArrivedSoon int64
 	var countOtw int64
 
-	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "8").Count(&countDelay)
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").Group("resi_id").Where("(container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").Count(&countDelay)
 	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "4").Count(&countArrivedSoon)
 	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "3").Count(&countOtw)
 
