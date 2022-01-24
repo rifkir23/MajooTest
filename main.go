@@ -30,7 +30,6 @@ func main() {
 	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
 
-	r.GET("/all", receiptSeaController.All)
 	r.GET("/count", receiptSeaController.Count)
 	r.GET("/detail", receiptSeaController.Detail)
 	r.GET("/list", receiptSeaController.List)

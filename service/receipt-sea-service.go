@@ -2,13 +2,11 @@ package service
 
 import (
 	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
-	"github.com/wilopo-cargo/microservice-receipt-sea/entity"
 	"github.com/wilopo-cargo/microservice-receipt-sea/repository"
 )
 
 //ReceiptSeaService is a ....
 type ReceiptSeaService interface {
-	All() []entity.Resi
 	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
 	Count(customerId int64, cd dto.CountDTO) dto.CountDTO
 	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO
@@ -24,10 +22,6 @@ func NewReceiptSeaService(receiptSeaRepo repository.ReceiptSeaRepository) Receip
 	return &receiptSeaService{
 		receiptSeaRepository: receiptSeaRepo,
 	}
-}
-
-func (service *receiptSeaService) All() []entity.Resi {
-	return service.receiptSeaRepository.AllReceiptSea()
 }
 
 func (service *receiptSeaService) Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult {

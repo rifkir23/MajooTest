@@ -12,7 +12,6 @@ import (
 
 //ReceiptSeaController is a ...
 type ReceiptSeaController interface {
-	All(context *gin.Context)
 	Count(context *gin.Context)
 	Detail(context *gin.Context)
 	List(context *gin.Context)
@@ -30,20 +29,6 @@ func NewReceiptSeaController(receiptSeaServ service.ReceiptSeaService, jwtServ s
 		receiptSeaService: receiptSeaServ,
 		//jwtService:  jwtServ,
 	}
-}
-
-// All godoc
-// @Summary All example
-// @Schemes
-// @Description All Receipt Sea
-// @Accept json
-// @Produce json
-// @Success 200 {object} helper.Response{data=[]entity.Resi}
-// @Router /all [GET]
-func (c *receiptSeaController) All(context *gin.Context) {
-	var receipts = c.receiptSeaService.All()
-	res := helper.BuildResponse(true, "OK", receipts)
-	context.JSON(http.StatusOK, res)
 }
 
 // Count godoc

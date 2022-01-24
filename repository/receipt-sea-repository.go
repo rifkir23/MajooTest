@@ -9,7 +9,6 @@ import (
 
 //ReceiptSeaRepository is a ....
 type ReceiptSeaRepository interface {
-	AllReceiptSea() []entity.Resi
 	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
 	CountReceiptSea(customerId int64, cd dto.CountDTO) dto.CountDTO
 	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO
@@ -178,12 +177,6 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 	receiptDetailResult.StatusDetailReceipt = statusDetail
 
 	return receiptDetailResult
-}
-
-func (db *receiptSeaConnection) AllReceiptSea() []entity.Resi {
-	var receipt_sea []entity.Resi
-	db.connection.Limit(10).Find(&receipt_sea)
-	return receipt_sea
 }
 
 func (db *receiptSeaConnection) CountReceiptSea(customerId int64, cd dto.CountDTO) dto.CountDTO {

@@ -32,99 +32,6 @@ definitions:
       receiptSeaNumber:
         type: string
     type: object
-  entity.Container:
-    properties:
-      id_container:
-        type: integer
-      id_rts:
-        type: string
-      kode:
-        type: string
-      nomor:
-        type: string
-      status:
-        type: integer
-      tanggal_arrived_c:
-        type: string
-      tanggal_berangkat_c:
-        type: string
-      tanggal_monitoring_c:
-        type: string
-      tgl_antri_kapal:
-        type: string
-      tgl_atur_kapal:
-        type: string
-      tgl_closing:
-        type: string
-      tgl_est_dumai:
-        type: string
-      tgl_eta:
-        type: string
-      tgl_loading:
-        type: string
-      tgl_notul:
-        type: string
-      tgl_pib:
-        type: string
-    type: object
-  entity.Giw:
-    properties:
-      barang:
-        type: string
-      berat:
-        type: string
-      container:
-        $ref: '#/definitions/entity.Container'
-      container_id:
-        type: integer
-      ctns:
-        type: integer
-      harga:
-        type: number
-      harga_jual:
-        type: number
-      id:
-        type: integer
-      kurs:
-        type: number
-      nilai:
-        type: string
-      nomor:
-        type: string
-      note:
-        type: string
-      qty:
-        type: integer
-      remarks:
-        type: string
-      resi_id:
-        type: integer
-      volume:
-        type: string
-    type: object
-  entity.Resi:
-    properties:
-      giw:
-        items:
-          $ref: '#/definitions/entity.Giw'
-        type: array
-      gudang:
-        type: integer
-      id_resi:
-        type: integer
-      id_resi_rts:
-        type: integer
-      konfirmasi_resi:
-        type: string
-      nomor:
-        type: string
-      supplier:
-        type: string
-      tanggal:
-        type: string
-      tel:
-        type: string
-    type: object
   helper.Response:
     properties:
       data: { }
@@ -137,26 +44,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /all:
-    get:
-      consumes:
-      - application/json
-      description: All Receipt Sea
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-              - $ref: '#/definitions/helper.Response'
-              - properties:
-                  data:
-                    items:
-                      $ref: '#/definitions/entity.Resi'
-                    type: array
-                type: object
-      summary: All example
   /container-by-receipt:
     post:
       consumes:
