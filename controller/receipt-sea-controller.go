@@ -98,6 +98,7 @@ func (c *receiptSeaController) Detail(context *gin.Context) {
 // @Description Receipt List
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Insert your access token. Format: Bearer access_token"
 // @Param List page  query int  false  "Pages"
 // @Param List limit  query int  false  "Limit"
 // @Param List status query  string  false  "Status"

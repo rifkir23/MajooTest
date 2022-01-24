@@ -33,6 +33,7 @@ func NewReceiptController(receiptServ service.ReceiptService, jwtServ service.JW
 // @Description Receipt List
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Insert your access token. Format: Bearer access_token"
 // @Param List page  query int  false  "Pages"
 // @Param List limit  query int  false  "Limit"
 // @Param List receiptType query  string  false  "receiptType"

@@ -181,6 +181,13 @@
           "summary": "All example",
           "parameters": [
             {
+              "type": "string",
+              "description": "Insert your access token. Format: Bearer access_token",
+              "name": "Authorization",
+              "in": "header",
+              "required": true
+            },
+            {
               "type": "integer",
               "description": "Pages",
               "name": "page",
@@ -232,6 +239,13 @@
           ],
           "summary": "All example",
           "parameters": [
+            {
+              "type": "string",
+              "description": "Insert your access token. Format: Bearer access_token",
+              "name": "Authorization",
+              "in": "header",
+              "required": true
+            },
             {
               "type": "integer",
               "description": "Pages",
@@ -465,19 +479,19 @@
             "type": "string"
           }
         }
-        },
-        "helper.Response": {
-            "type": "object",
-            "properties": {
-              "data": {},
-              "errors": {},
-              "message": {
-                "type": "string"
-              },
-              "status": {
-                "type": "boolean"
-              }
-            }
+      },
+      "helper.Response": {
+        "type": "object",
+        "properties": {
+          "data": {},
+          "errors": {},
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          }
+        }
         }
     }
 }

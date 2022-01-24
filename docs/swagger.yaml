@@ -239,6 +239,11 @@ paths:
         - application/json
       description: Receipt List
       parameters:
+        - description: 'Insert your access token. Format: Bearer access_token'
+          in: header
+          name: Authorization
+          required: true
+          type: string
         - description: Pages
           in: query
           name: page
@@ -270,6 +275,11 @@ paths:
         - application/json
       description: Receipt List
       parameters:
+        - description: 'Insert your access token. Format: Bearer access_token'
+          in: header
+          name: Authorization
+          required: true
+          type: string
         - description: Pages
           in: query
           name: page

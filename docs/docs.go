@@ -200,6 +200,13 @@ var doc = `{
                 "summary": "All example",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Insert your access token. Format: Bearer access_token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
                         "description": "Pages",
                         "name": "page",
@@ -251,6 +258,13 @@ var doc = `{
                 ],
                 "summary": "All example",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your access token. Format: Bearer access_token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "Pages",
