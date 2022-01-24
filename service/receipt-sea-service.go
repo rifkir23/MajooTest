@@ -8,9 +8,9 @@ import (
 //ReceiptSeaService is a ....
 type ReceiptSeaService interface {
 	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
-	Count(customerId int64, cd dto.CountDTO) dto.CountDTO
-	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO
-	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
+	Count(customerId int64, cd dto.CountReceiptSea) dto.CountReceiptSea
+	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResult
+	ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt
 }
 
 type receiptSeaService struct {
@@ -28,14 +28,14 @@ func (service *receiptSeaService) Detail(receiptId int64, containerId int64) dto
 	return service.receiptSeaRepository.Detail(receiptId, containerId)
 }
 
-func (service *receiptSeaService) Count(customerId int64, cd dto.CountDTO) dto.CountDTO {
+func (service *receiptSeaService) Count(customerId int64, cd dto.CountReceiptSea) dto.CountReceiptSea {
 	return service.receiptSeaRepository.CountReceiptSea(customerId, cd)
 }
 
-func (service *receiptSeaService) List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO {
+func (service *receiptSeaService) List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResult {
 	return service.receiptSeaRepository.List(customerId, page, limit, status)
 }
 
-func (service *receiptSeaService) ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO {
-	return service.receiptSeaRepository.ReceiptByContainer(resiNumber)
+func (service *receiptSeaService) ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt {
+	return service.receiptSeaRepository.ReceiptByContainer(receiptSeaNumber)
 }

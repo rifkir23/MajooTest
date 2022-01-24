@@ -1,5 +1,5 @@
 definitions:
-  dto.ContainerByReceiptDTO:
+  dto.ContainerByReceipt:
     properties:
       containerID:
         type: integer
@@ -8,7 +8,7 @@ definitions:
       status:
         type: string
     type: object
-  dto.CountDTO:
+  dto.CountReceiptSea:
     properties:
       arrivedSoon:
         type: integer
@@ -22,7 +22,7 @@ definitions:
       content: { }
       pagination: { }
     type: object
-  dto.ReceiptListResultDTO:
+  dto.ReceiptListResult:
     properties:
       content: { }
       pagination: { }
@@ -66,7 +66,7 @@ paths:
               - $ref: '#/definitions/helper.Response'
               - properties:
                   data:
-                    $ref: '#/definitions/dto.ContainerByReceiptDTO'
+                    $ref: '#/definitions/dto.ContainerByReceipt'
                 type: object
       summary: All example
   /count:
@@ -90,7 +90,7 @@ paths:
               - $ref: '#/definitions/helper.Response'
               - properties:
                   data:
-                    $ref: '#/definitions/dto.CountDTO'
+                    $ref: '#/definitions/dto.CountReceiptSea'
                 type: object
       summary: All example
   /detail:
@@ -117,7 +117,7 @@ paths:
               - $ref: '#/definitions/helper.Response'
               - properties:
                   data:
-                    $ref: '#/definitions/dto.ReceiptListResultDTO'
+                    $ref: '#/definitions/dto.ReceiptListResult'
                 type: object
       summary: All example
   /list:
@@ -153,7 +153,7 @@ paths:
               - $ref: '#/definitions/helper.Response'
               - properties:
                   data:
-                    $ref: '#/definitions/dto.ReceiptListResultDTO'
+                    $ref: '#/definitions/dto.ReceiptListResult'
                 type: object
       summary: All example
   /receipt/list:

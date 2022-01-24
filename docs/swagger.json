@@ -37,7 +37,7 @@
                     "type": "object",
                     "properties": {
                       "data": {
-                        "$ref": "#/definitions/dto.ContainerByReceiptDTO"
+                        "$ref": "#/definitions/dto.ContainerByReceipt"
                       }
                     }
                   }
@@ -78,7 +78,7 @@
                     "type": "object",
                     "properties": {
                       "data": {
-                        "$ref": "#/definitions/dto.CountDTO"
+                        "$ref": "#/definitions/dto.CountReceiptSea"
                       }
                     }
                   }
@@ -124,7 +124,7 @@
                     "type": "object",
                     "properties": {
                       "data": {
-                        "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                        "$ref": "#/definitions/dto.ReceiptListResult"
                       }
                     }
                   }
@@ -183,7 +183,7 @@
                     "type": "object",
                     "properties": {
                       "data": {
-                        "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                        "$ref": "#/definitions/dto.ReceiptListResult"
                       }
                     }
                   }
@@ -254,7 +254,7 @@
       }
     },
     "definitions": {
-      "dto.ContainerByReceiptDTO": {
+      "dto.ContainerByReceipt": {
         "type": "object",
         "properties": {
           "containerID": {
@@ -268,7 +268,7 @@
           }
         }
       },
-      "dto.CountDTO": {
+      "dto.CountReceiptSea": {
         "type": "object",
         "properties": {
           "arrivedSoon": {
@@ -289,7 +289,7 @@
           "pagination": {}
         }
       },
-      "dto.ReceiptListResultDTO": {
+      "dto.ReceiptListResult": {
         "type": "object",
         "properties": {
           "content": {},

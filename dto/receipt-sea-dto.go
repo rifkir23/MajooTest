@@ -11,7 +11,7 @@ type ReceiptSeaResponse struct {
 }
 
 /*Count Receipt Sea */
-type CountDTO struct {
+type CountReceiptSea struct {
 	Delay       int64 `json:"delay"`
 	ArrivedSoon int64 `json:"arrivedSoon"`
 	Otw         int64 `json:"onTheWay"`
@@ -19,14 +19,14 @@ type CountDTO struct {
 
 /*Receipt List*/
 type ReceiptList struct {
-	IDResi  uint64 `json:"id"`
-	Tanggal string `json:"date"`
-	Nomor   string `json:"receiptNumber"`
-	Status  string `json:"status"`
+	ReceiptSeaId     uint64 `json:"id"`
+	Date             string `json:"date"`
+	ReceiptSeaNumber string `json:"receiptNumber"`
+	Status           string `json:"status"`
 }
 
 /*Receipt list*/
-type ReceiptListResultDTO struct {
+type ReceiptListResult struct {
 	Pagination interface{} `json:"pagination"`
 	Receipt    interface{} `json:"content"`
 }
@@ -40,10 +40,10 @@ type Pagination struct {
 }
 
 /*Receipt by Container*/
-type ContainerByReceiptDTO struct {
-	ContainerID int64  `json:"containerID"`
-	IDResi      int64  `json:"receiptID"`
-	Status      string `json:"status"`
+type ContainerByReceipt struct {
+	ContainerId  int64  `json:"containerID"`
+	ReceiptSeaId int64  `json:"receiptID"`
+	Status       string `json:"status"`
 }
 
 type ReceiptDetailResult struct {
@@ -53,17 +53,17 @@ type ReceiptDetailResult struct {
 }
 
 type ReceiptDetail struct {
-	IDResi          uint64 `json:"id"`
-	IDResiRts       uint64 `json:"receiptIdRts"`
-	KonfirmasiResi  string `json:"status"`
-	MarkingCode     string `json:"markingCode"`
-	Nomor           string `json:"receiptNumber"`
-	Tanggal         string `json:"date"`
-	Tel             string `json:"phoneNumber"`
-	WhatsappNumber  string `json:"whatsappNumber"`
-	Note            string `json:"note"`
-	Gudang          string `json:"warehouseLocation"`
-	InsuranceNumber string `json:"insuranceNumber"`
+	ReceiptSeaId     uint64 `json:"id"`
+	ReceiptRtsId     uint64 `json:"receiptIdRts"`
+	StatusConfirm    string `json:"status"`
+	MarkingCode      string `json:"markingCode"`
+	ReceiptSeaNumber string `json:"receiptNumber"`
+	Date             string `json:"date"`
+	Tel              string `json:"phoneNumber"`
+	WhatsappNumber   string `json:"whatsappNumber"`
+	Note             string `json:"note"`
+	Warehouse        string `json:"warehouseLocation"`
+	InsuranceNumber  string `json:"insuranceNumber"`
 }
 
 type BarcodeDetailReceipt struct {

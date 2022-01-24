@@ -38,7 +38,7 @@ func NewReceiptSeaController(receiptSeaServ service.ReceiptSeaService, jwtServ s
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Insert your access token. Format: Bearer access_token"
-// @Success 200 {object} helper.Response{data=dto.CountDTO}
+// @Success 200 {object} helper.Response{data=dto.CountReceiptSea}
 // @Router /count [GET]
 func (c *receiptSeaController) Count(context *gin.Context) {
 	tokenAuth, errToken := utility.ValidateJwtToken(context.Request)
@@ -46,7 +46,7 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 		panic(errToken.Error())
 	}
 
-	var countReceiptDTO dto.CountDTO
+	var countReceiptDTO dto.CountReceiptSea
 	result := c.receiptSeaService.Count(int64(tokenAuth.UserId), countReceiptDTO)
 	res := helper.BuildResponse(true, "OK", result)
 	context.JSON(http.StatusOK, res)
@@ -60,7 +60,7 @@ func (c *receiptSeaController) Count(context *gin.Context) {
 // @Produce json
 // @Param Detail receiptId  query int  false  "ReceiptId"
 // @Param Detail containerId  query int  false  "ContainerId"
-// @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
+// @Success 200 {object} helper.Response{data=dto.ReceiptListResult}
 // @Router /detail [GET]
 func (c *receiptSeaController) Detail(context *gin.Context) {
 	receiptId, err := strconv.ParseInt(context.Query("receiptId"), 0, 0)
@@ -71,9 +71,9 @@ func (c *receiptSeaController) Detail(context *gin.Context) {
 		return
 	}
 
-	var receipt_sea = c.receiptSeaService.Detail(receiptId, containerId)
+	var receiptSea = c.receiptSeaService.Detail(receiptId, containerId)
 
-	res := helper.BuildResponse(true, "OK", receipt_sea)
+	res := helper.BuildResponse(true, "OK", receiptSea)
 	context.JSON(http.StatusOK, res)
 }
 
@@ -87,7 +87,7 @@ func (c *receiptSeaController) Detail(context *gin.Context) {
 // @Param List page  query int  false  "Pages"
 // @Param List limit  query int  false  "Limit"
 // @Param List status query  string  false  "Status"
-// @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
+// @Success 200 {object} helper.Response{data=dto.ReceiptListResult}
 // @Router /list [GET]
 func (c *receiptSeaController) List(context *gin.Context) {
 	tokenAuth, errToken := utility.ValidateJwtToken(context.Request)
@@ -116,13 +116,13 @@ func (c *receiptSeaController) List(context *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param ReceiptByContainer body dto.ReceiptNumber true "ReceiptByContainer"
-// @Success 200 {object} helper.Response{data=dto.ContainerByReceiptDTO}
+// @Success 200 {object} helper.Response{data=dto.ContainerByReceipt}
 // @Router /container-by-receipt [POST]
 func (c *receiptSeaController) ReceiptByContainer(context *gin.Context) {
 	var receiptNumber dto.ReceiptNumber
 	context.BindJSON(&receiptNumber)
 
-	var receipt_sea = c.receiptSeaService.ReceiptByContainer(receiptNumber.ReceiptSeaNumber)
-	res := helper.BuildResponse(true, "OK", receipt_sea)
+	var receiptSea = c.receiptSeaService.ReceiptByContainer(receiptNumber.ReceiptSeaNumber)
+	res := helper.BuildResponse(true, "OK", receiptSea)
 	context.JSON(http.StatusOK, res)
 }

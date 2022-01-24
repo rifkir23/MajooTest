@@ -10,9 +10,9 @@ import (
 //ReceiptSeaRepository is a ....
 type ReceiptSeaRepository interface {
 	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
-	CountReceiptSea(customerId int64, cd dto.CountDTO) dto.CountDTO
-	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO
-	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
+	CountReceiptSea(customerId int64, cd dto.CountReceiptSea) dto.CountReceiptSea
+	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResult
+	ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt
 }
 
 type receiptSeaConnection struct {
@@ -27,7 +27,7 @@ func NewReceiptSeaRepository(dbConn *gorm.DB) ReceiptSeaRepository {
 }
 
 func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult {
-	var receipt_sea entity.Resi
+	var receiptSea entity.Resi
 	var giw entity.Giw
 	var container entity.Container
 	var historyReceiptSea entity.ReceiptSeaHistory
@@ -42,7 +42,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 	var delayEta []dto.DelayEta
 	var delayOtwLast dto.DelayOtwLast
 
-	db.connection.Model(&receipt_sea).Select("resi.id_resi_rts,resi.id_resi,konfirmasi_resi,'123/WC-tes' as MarkingCode,nomor,tanggal,tel,'081312345678' as WhatsappNumber,resi.note,gudang,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
+	db.connection.Model(&receiptSea).Select("resi.id_resi as ReceiptSeaId,resi.id_resi_rts as ReceiptRtsId,konfirmasi_resi as StatusConfirm,'123/WC-tes' as MarkingCode,nomor as ReceiptSeaNumber,tanggal as Date,tel,'081312345678' as WhatsappNumber,resi.note,gudang as Warehouse,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
 		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").
 		First(&receiptDetail, receiptId)
 
@@ -58,7 +58,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 
 	db.connection.Model(&historyReceiptSea).Select("tanggal as Date,status_resi.nama as ProcessTitle,status_resi.keterangan as Description").
 		Joins("LEFT JOIN status_resi on history_date_status.tipe_resi = status_resi.id").
-		Where("resi_id = ?", receiptDetail.IDResiRts).
+		Where("resi_id = ?", receiptDetail.ReceiptRtsId).
 		Find(&statusDetail)
 
 	db.connection.Where("id_rts", containerId).First(&container)
@@ -179,7 +179,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 	return receiptDetailResult
 }
 
-func (db *receiptSeaConnection) CountReceiptSea(customerId int64, cd dto.CountDTO) dto.CountDTO {
+func (db *receiptSeaConnection) CountReceiptSea(customerId int64, cd dto.CountReceiptSea) dto.CountReceiptSea {
 	var giw entity.Giw
 	var countDelay int64
 	var countArrivedSoon int64
@@ -211,21 +211,21 @@ func (db *receiptSeaConnection) CountReceiptSea(customerId int64, cd dto.CountDT
 	return cd
 }
 
-func (db *receiptSeaConnection) List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO {
+func (db *receiptSeaConnection) List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResult {
 	var giw entity.Giw
 	var receiptList []dto.ReceiptList
 	var pagination dto.Pagination
 	var countList int64
 
 	if status == "arrivedSoon" {
-		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'"+status+"'as status").
+		db.connection.Model(&giw).Select("id_resi as ReceiptSeaId,resi.tanggal as Date,resi.nomor as ReceiptSeaNumber,'"+status+"'as status").
 			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 			Where("container.status = ?", 4).
 			Where("customer_id", customerId).
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	} else if status == "delay" {
-		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'"+status+"'as status").
+		db.connection.Model(&giw).Select("id_resi as ReceiptSeaId,resi.tanggal as Date,resi.nomor as ReceiptSeaNumber,'"+status+"'as status").
 			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 			Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").
@@ -257,7 +257,7 @@ func (db *receiptSeaConnection) List(customerId int64, page int64, limit int64, 
 	pagination.TotalElement = countList
 	pagination.TotalPage = countList / limit
 
-	results := dto.ReceiptListResultDTO{
+	results := dto.ReceiptListResult{
 		Pagination: pagination,
 		Receipt:    receiptList,
 	}
@@ -265,15 +265,15 @@ func (db *receiptSeaConnection) List(customerId int64, page int64, limit int64, 
 	return results
 }
 
-func (db *receiptSeaConnection) ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO {
+func (db *receiptSeaConnection) ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt {
 	var giw entity.Giw
-	var receipt_by_container_list []dto.ContainerByReceiptDTO
+	var receiptByContainerList []dto.ContainerByReceipt
 	db.connection.Model(&giw).
-		Select("giw.container_id,resi.id_resi,status_giw.status").
+		Select("giw.container_id as ContainerId,resi.id_resi as ReceiptSeaId,status_giw.status").
 		Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 		Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 		Joins("LEFT JOIN status_giw on container.status = status_giw.id ").
-		Where("resi.nomor = ?", resiNumber).Group("giw.container_id").Find(&receipt_by_container_list)
+		Where("resi.nomor = ?", receiptSeaNumber).Group("giw.container_id").Find(&receiptByContainerList)
 
-	return receipt_by_container_list
+	return receiptByContainerList
 }

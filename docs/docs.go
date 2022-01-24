@@ -56,7 +56,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.ContainerByReceiptDTO"
+                                            "$ref": "#/definitions/dto.ContainerByReceipt"
                                         }
                                     }
                                 }
@@ -97,7 +97,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.CountDTO"
+                                            "$ref": "#/definitions/dto.CountReceiptSea"
                                         }
                                     }
                                 }
@@ -143,7 +143,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                                            "$ref": "#/definitions/dto.ReceiptListResult"
                                         }
                                     }
                                 }
@@ -202,7 +202,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.ReceiptListResultDTO"
+                                            "$ref": "#/definitions/dto.ReceiptListResult"
                                         }
                                     }
                                 }
@@ -273,7 +273,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "dto.ContainerByReceiptDTO": {
+        "dto.ContainerByReceipt": {
             "type": "object",
             "properties": {
                 "containerID": {
@@ -287,7 +287,7 @@ var doc = `{
                 }
             }
         },
-        "dto.CountDTO": {
+        "dto.CountReceiptSea": {
             "type": "object",
             "properties": {
                 "arrivedSoon": {
@@ -308,7 +308,7 @@ var doc = `{
                 "pagination": {}
             }
         },
-        "dto.ReceiptListResultDTO": {
+        "dto.ReceiptListResult": {
             "type": "object",
             "properties": {
                 "content": {},
