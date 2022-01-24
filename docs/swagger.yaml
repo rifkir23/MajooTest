@@ -187,6 +187,12 @@ paths:
       consumes:
         - application/json
       description: Count Receipt Sea
+      parameters:
+        - description: 'Insert your access token. Format: Bearer access_token'
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
         - application/json
       responses:

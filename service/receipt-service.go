@@ -7,7 +7,7 @@ import (
 
 //ReceiptService is a ....
 type ReceiptService interface {
-	List(page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult
+	List(customerId int64, page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult
 }
 
 type receiptService struct {
@@ -21,6 +21,6 @@ func NewReceiptService(receiptRepo repository.ReceiptRepository) ReceiptService 
 	}
 }
 
-func (service *receiptService) List(page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult {
-	return service.receiptRepository.List(page, limit, receiptType)
+func (service *receiptService) List(customerId int64, page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult {
+	return service.receiptRepository.List(customerId, page, limit, receiptType)
 }

@@ -11,8 +11,8 @@ import (
 type ReceiptSeaRepository interface {
 	AllReceiptSea() []entity.Resi
 	Detail(receiptId int64, containerId int64) dto.ReceiptDetailResult
-	CountReceiptSea(cd dto.CountDTO) dto.CountDTO
-	List(page int64, limit int64, status string) dto.ReceiptListResultDTO
+	CountReceiptSea(customerId int64, cd dto.CountDTO) dto.CountDTO
+	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO
 	ReceiptByContainer(resiNumber string) []dto.ContainerByReceiptDTO
 }
 
@@ -44,11 +44,24 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 	var delayOtwLast dto.DelayOtwLast
 
 	db.connection.Model(&receipt_sea).Select("resi.id_resi_rts,resi.id_resi,konfirmasi_resi,'123/WC-tes' as MarkingCode,nomor,tanggal,tel,'081312345678' as WhatsappNumber,resi.note,gudang,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
-		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").First(&receiptDetail, receiptId)
-	db.connection.Model(&giw).Where("resi_id = ?", receiptId).Where("container_id = ?", containerId).Find(&barcodeList)
+		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").
+		First(&receiptDetail, receiptId)
+
+	db.connection.Model(&giw).Where("resi_id = ?", receiptId).
+		Where("container_id = ?", containerId).
+		Find(&barcodeList)
+
 	db.connection.Model(&giw).Select("sum(ctns) as TotalCartons,sum(qty*ctns) as TotalQty,round(sum(nilai*ctns),3) as TotalValue,round(sum(volume*ctns),3) as TotalVolume,round(sum(berat*ctns),3) as TotalWeight").
-		Where("resi_id = ?", receiptId).Where("container_id = ?", containerId).Group("resi_id").Find(&barcodeDetail)
-	db.connection.Model(&historyReceiptSea).Select("tanggal as Date,status_resi.nama as ProcessTitle,status_resi.keterangan as Description").Joins("LEFT JOIN status_resi on history_date_status.tipe_resi = status_resi.id").Where("resi_id = ?", receiptDetail.IDResiRts).Find(&statusDetail)
+		Where("resi_id = ?", receiptId).
+		Where("container_id = ?", containerId).
+		Group("resi_id").
+		Find(&barcodeDetail)
+
+	db.connection.Model(&historyReceiptSea).Select("tanggal as Date,status_resi.nama as ProcessTitle,status_resi.keterangan as Description").
+		Joins("LEFT JOIN status_resi on history_date_status.tipe_resi = status_resi.id").
+		Where("resi_id = ?", receiptDetail.IDResiRts).
+		Find(&statusDetail)
+
 	db.connection.Where("id_rts", containerId).First(&container)
 	db.connection.Model(&delay).Where("id_container_rts", containerId).Where("tipe", 1).Order("tgl_delay asc").Find(&delayOtw)
 	db.connection.Model(&delay).Where("id_container_rts", containerId).Where("tipe", 2).Order("tgl_delay asc").Find(&delayEta)
@@ -173,15 +186,30 @@ func (db *receiptSeaConnection) AllReceiptSea() []entity.Resi {
 	return receipt_sea
 }
 
-func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
+func (db *receiptSeaConnection) CountReceiptSea(customerId int64, cd dto.CountDTO) dto.CountDTO {
 	var giw entity.Giw
 	var countDelay int64
 	var countArrivedSoon int64
 	var countOtw int64
 
-	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").Group("resi_id").Where("(container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").Count(&countDelay)
-	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "4").Count(&countArrivedSoon)
-	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").Group("resi_id").Where("container.status = ?", "3").Count(&countOtw)
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").
+		Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").
+		Where("customer_id", customerId).
+		Where("(container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").
+		Group("resi_id").
+		Count(&countDelay)
+
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").
+		Group("resi_id").
+		Where("customer_id", customerId).
+		Where("container.status = ?", "4").
+		Count(&countArrivedSoon)
+
+	db.connection.Model(&giw).Joins("LEFT JOIN container on giw.container_id = container.id_rts").
+		Group("resi_id").
+		Where("customer_id", customerId).
+		Where("container.status = ?", "3").
+		Count(&countOtw)
 
 	cd.Delay = countDelay
 	cd.ArrivedSoon = countArrivedSoon
@@ -190,7 +218,7 @@ func (db *receiptSeaConnection) CountReceiptSea(cd dto.CountDTO) dto.CountDTO {
 	return cd
 }
 
-func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto.ReceiptListResultDTO {
+func (db *receiptSeaConnection) List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResultDTO {
 	var giw entity.Giw
 	var receiptList []dto.ReceiptList
 	var pagination dto.Pagination
@@ -201,12 +229,14 @@ func (db *receiptSeaConnection) List(page int64, limit int64, status string) dto
 			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 			Where("container.status = ?", 4).
+			Where("customer_id", customerId).
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	} else if status == "delay" {
-		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'" + status + "'as status").
+		db.connection.Model(&giw).Select("id_resi,resi.tanggal,resi.nomor,'"+status+"'as status").
 			Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi ").
 			Joins("LEFT JOIN container on giw.container_id = container.id_rts ").
 			Joins("LEFT JOIN delay on container.id_rts = delay.id_container_rts").
+			Where("customer_id", customerId).
 			Where("(container.status = 3 AND delay.tipe = 1) OR (container.status = 8 AND delay.tipe = 2)").
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	}

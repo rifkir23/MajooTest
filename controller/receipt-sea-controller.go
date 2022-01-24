@@ -5,6 +5,7 @@ import (
 	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"github.com/wilopo-cargo/microservice-receipt-sea/service"
+	"github.com/wilopo-cargo/microservice-receipt-sea/utility"
 	"net/http"
 	"strconv"
 )
@@ -51,11 +52,17 @@ func (c *receiptSeaController) All(context *gin.Context) {
 // @Description Count Receipt Sea
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Insert your access token. Format: Bearer access_token"
 // @Success 200 {object} helper.Response{data=dto.CountDTO}
 // @Router /count [GET]
 func (c *receiptSeaController) Count(context *gin.Context) {
+	tokenAuth, errToken := utility.ValidateJwtToken(context.Request)
+	if errToken != nil {
+		panic(errToken.Error())
+	}
+
 	var countReceiptDTO dto.CountDTO
-	result := c.receiptSeaService.Count(countReceiptDTO)
+	result := c.receiptSeaService.Count(int64(tokenAuth.UserId), countReceiptDTO)
 	res := helper.BuildResponse(true, "OK", result)
 	context.JSON(http.StatusOK, res)
 }
@@ -97,6 +104,11 @@ func (c *receiptSeaController) Detail(context *gin.Context) {
 // @Success 200 {object} helper.Response{data=dto.ReceiptListResultDTO}
 // @Router /list [GET]
 func (c *receiptSeaController) List(context *gin.Context) {
+	tokenAuth, errToken := utility.ValidateJwtToken(context.Request)
+	if errToken != nil {
+		panic(errToken.Error())
+	}
+
 	page, err := strconv.ParseInt(context.Query("page"), 0, 0)
 	limit, err := strconv.ParseInt(context.Query("limit"), 0, 0)
 	status := context.Query("status")
@@ -106,7 +118,7 @@ func (c *receiptSeaController) List(context *gin.Context) {
 		return
 	}
 
-	var receipts = c.receiptSeaService.List(page, limit, status)
+	var receipts = c.receiptSeaService.List(int64(tokenAuth.UserId), page, limit, status)
 	res := helper.BuildResponse(true, "OK", receipts)
 	context.JSON(http.StatusOK, res)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 type ReceiptRepository interface {
-	List(page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult
+	List(customerId int64, page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult
 }
 
 type receiptConnection struct {
@@ -22,7 +22,7 @@ func NewReceiptRepository(dbConn *gorm.DB) ReceiptRepository {
 	}
 }
 
-func (db *receiptConnection) List(page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult {
+func (db *receiptConnection) List(customerId int64, page int64, limit int64, receiptType string) dto.ReceiptListByTypeResult {
 	var receiptSea entity.Resi
 	var receiptAir entity.ReceiptAir
 	var receiptList []dto.ReceiptListByType
@@ -31,11 +31,11 @@ func (db *receiptConnection) List(page int64, limit int64, receiptType string) d
 
 	if receiptType == "sea" {
 		db.connection.Model(&receiptSea).Select("id_resi as ReceiptId,tanggal as Date,'"+receiptType+"'as Type,nomor as ReceiptNumber,IF(konfirmasi_resi = 0,0,1 ) as Status").
-			Where("cust_id", 3669).
+			Where("cust_id", customerId).
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	} else if receiptType == "air" {
 		db.connection.Model(&receiptAir).Select("id_resi_udara as ReceiptId,tanggal_resi as Date,'"+receiptType+"'as Type,nomor_resi as ReceiptNumber,IF(id_invoice > 0,1,0 ) as Status").
-			Where("id_cust", 3669).
+			Where("id_cust", customerId).
 			Count(&countList).Scopes(helper.PaginateReceipt(page, limit)).Find(&receiptList)
 	}
 

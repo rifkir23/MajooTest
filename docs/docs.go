@@ -111,6 +111,15 @@ var doc = `{
                     "application/json"
                 ],
                 "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your access token. Format: Bearer access_token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

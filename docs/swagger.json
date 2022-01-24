@@ -92,6 +92,15 @@
             "application/json"
           ],
           "summary": "All example",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "Insert your access token. Format: Bearer access_token",
+              "name": "Authorization",
+              "in": "header",
+              "required": true
+            }
+          ],
           "responses": {
             "200": {
               "description": "OK",
@@ -421,41 +430,41 @@
             "type": "string"
           }
         }
-        },
-        "entity.Resi": {
-            "type": "object",
-            "properties": {
-              "giw": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/entity.Giw"
-                }
-              },
-              "gudang": {
-                "type": "integer"
-              },
-              "id_resi": {
-                "type": "integer"
-              },
-              "id_resi_rts": {
-                "type": "integer"
-              },
-              "konfirmasi_resi": {
-                "type": "string"
-              },
-              "nomor": {
-                "type": "string"
-              },
-              "supplier": {
-                "type": "string"
-              },
-              "tanggal": {
-                "type": "string"
-              },
-              "tel": {
-                "type": "string"
-              }
+      },
+      "entity.Resi": {
+        "type": "object",
+        "properties": {
+          "giw": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/entity.Giw"
             }
+          },
+          "gudang": {
+            "type": "integer"
+          },
+          "id_resi": {
+            "type": "integer"
+          },
+          "id_resi_rts": {
+            "type": "integer"
+          },
+          "konfirmasi_resi": {
+            "type": "string"
+          },
+          "nomor": {
+            "type": "string"
+          },
+          "supplier": {
+            "type": "string"
+          },
+          "tanggal": {
+            "type": "string"
+          },
+          "tel": {
+            "type": "string"
+          }
+        }
         },
         "helper.Response": {
             "type": "object",

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"github.com/wilopo-cargo/microservice-receipt-sea/service"
+	"github.com/wilopo-cargo/microservice-receipt-sea/utility"
 	"net/http"
 	"strconv"
 )
@@ -38,6 +39,11 @@ func NewReceiptController(receiptServ service.ReceiptService, jwtServ service.JW
 // @Success 200 {object} helper.Response{data=dto.ReceiptListByTypeResult}
 // @Router /receipt/list [GET]
 func (c *receiptController) List(context *gin.Context) {
+	tokenAuth, errToken := utility.ValidateJwtToken(context.Request)
+	if errToken != nil {
+		panic(errToken.Error())
+	}
+
 	page, err := strconv.ParseInt(context.Query("page"), 0, 0)
 	limit, err := strconv.ParseInt(context.Query("limit"), 0, 0)
 	receiptType := context.Query("receiptType")
@@ -47,7 +53,7 @@ func (c *receiptController) List(context *gin.Context) {
 		return
 	}
 
-	var receipts = c.receiptService.List(page, limit, receiptType)
+	var receipts = c.receiptService.List(int64(tokenAuth.UserId), page, limit, receiptType)
 	res := helper.BuildResponse(true, "OK", receipts)
 	context.JSON(http.StatusOK, res)
 }
