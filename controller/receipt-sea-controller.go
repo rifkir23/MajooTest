@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"github.com/wilopo-cargo/microservice-receipt-sea/service"
@@ -120,7 +121,11 @@ func (c *receiptSeaController) List(context *gin.Context) {
 // @Router /container-by-receipt [POST]
 func (c *receiptSeaController) ReceiptByContainer(context *gin.Context) {
 	var receiptNumber dto.ReceiptNumber
-	context.BindJSON(&receiptNumber)
+	err := context.BindJSON(&receiptNumber)
+	if err != nil {
+		logrus.Error("Error bind json")
+		return
+	}
 
 	var receiptSea = c.receiptSeaService.ReceiptByContainer(receiptNumber.ReceiptSeaNumber)
 	res := helper.BuildResponse(true, "OK", receiptSea)
