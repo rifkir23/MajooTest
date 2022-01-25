@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 /*Handle Json*/
 type ReceiptNumber struct {
 	ReceiptSeaNumber string `json:"receiptSeaNumber"`
@@ -87,7 +89,7 @@ type BarcodeList struct {
 
 type StatusDetailReceipt struct {
 	//ID           uint64 `json:"id"`
-	Date         string `json:"date"`
-	ProcessTitle string `json:"processTitle"`
-	Description  string `json:"description"`
+	Date         time.Time `json:"date"`
+	ProcessTitle string    `json:"processTitle"`
+	Description  string    `json:"description"`
 }

@@ -5,6 +5,8 @@ import (
 	"github.com/wilopo-cargo/microservice-receipt-sea/entity"
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"gorm.io/gorm"
+	"strings"
+	"time"
 )
 
 //ReceiptSeaRepository is a ....
@@ -33,14 +35,17 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 	var historyReceiptSea entity.ReceiptSeaHistory
 	var delay []entity.Delay
 
+	var receiptDetailResult dto.ReceiptDetailResult
 	var receiptDetail dto.ReceiptDetail
 	var barcodeDetail dto.BarcodeDetailReceipt
 	var barcodeList []dto.BarcodeList
 	var statusDetail []dto.StatusDetailReceipt
-	var receiptDetailResult dto.ReceiptDetailResult
 	var delayOtw []dto.DelayOtw
 	var delayEta []dto.DelayEta
 	var delayOtwLast dto.DelayOtwLast
+	var delayEtaLast dto.DelayEtaLast
+
+	var etaDescription string
 
 	db.connection.Model(&receiptSea).Select("resi.id_resi as ReceiptSeaId,resi.id_resi_rts as ReceiptRtsId,konfirmasi_resi as StatusConfirm,'123/WC-tes' as MarkingCode,nomor as ReceiptSeaNumber,tanggal as Date,tel,'081312345678' as WhatsappNumber,resi.note,gudang as Warehouse,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
 		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").
@@ -61,12 +66,20 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		Where("resi_id = ?", receiptDetail.ReceiptRtsId).
 		Find(&statusDetail)
 
-	db.connection.Where("id_rts", containerId).First(&container)
+	db.connection.Preload("StatusContainer").Where("id_rts", containerId).First(&container)
 	db.connection.Model(&delay).Where("id_container_rts", containerId).Where("tipe", 1).Order("tgl_delay asc").Find(&delayOtw)
 	db.connection.Model(&delay).Where("id_container_rts", containerId).Where("tipe", 2).Order("tgl_delay asc").Find(&delayEta)
 	db.connection.Model(&delay).Where("id_container_rts", containerId).Where("tipe", 1).Order("tgl_delay desc").First(&delayOtwLast)
+	db.connection.Model(&delay).Where("id_container_rts", containerId).Where("tipe", 2).Order("tgl_delay desc").First(&delayEtaLast)
 
-	if container.TglLoading != "" {
+	nowDate := time.Now().Format("2006-01-02 15:04:05")
+	if strings.Index(container.Kode, "PK") >= 0 {
+		etaDescription = "Container sudah sampai di Malaysia."
+	} else {
+		etaDescription = "Container sudah sampai di SMG."
+	}
+
+	if container.StatusContainer.Urutan >= 2 {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglLoading,
 			ProcessTitle: "Loading Container",
@@ -74,7 +87,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TglClosing != "" {
+	if container.StatusContainer.Urutan >= 3 {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglClosing,
 			ProcessTitle: "Closing Container",
@@ -82,48 +95,63 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TanggalBerangkatC != "" {
+	if container.StatusContainer.Urutan >= 4 {
+		/*Container Otw (No Delay)*/
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TanggalBerangkatC,
 			ProcessTitle: "Container OTW",
-			Description:  "Container sudah dapat jadwal jalan kapal.",
+			Description:  "Container sudah berangkat dari pelabuhan China.",
 		})
+
+		/*If Delay*/
+		for _, rowDelayO := range delayOtw {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         rowDelayO.TglDelay,
+				ProcessTitle: "Container Delay Otw",
+				Description:  rowDelayO.Keterangan,
+			})
+		}
+
+		/*Otw After Delay*/
+		lastDelayOtwDate := delayOtwLast.TglDelay.Format("2006-01-02 15:04:05")
+		if lastDelayOtwDate <= nowDate {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         delayOtwLast.TglDelay,
+				ProcessTitle: "Container OTW",
+				Description:  "Container sudah berangkat dari pelabuhan China.",
+			})
+		}
 	}
 
-	for _, rowDelayO := range delayOtw {
-		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
-			Date:         rowDelayO.TglDelay,
-			ProcessTitle: "Container Delay Otw",
-			Description:  rowDelayO.Keterangan,
-		})
-	}
-
-	//tes := "2009-11-10 23:00:00 +0000 UTC m=+0.000000001"
-	//if delayOtwLast.TglDelay != "" && time.Parse("2021-01-01", delayOtwLast.TglDelay) <= time.Now() {
-	//	statusDetail = append(statusDetail, dto.StatusDetailReceipt{
-	//		Date:         delayOtwLast.TglDelay,
-	//		ProcessTitle: "Container OTW",
-	//		Description:  "Container sudah berangkat dari pelabuhan China.",
-	//	})
-	//}
-
-	if container.TglEta != "" {
+	if container.StatusContainer.Urutan >= 5 && container.TglEta.IsZero() == false {
+		/*Container Eta (No Delay)*/
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglEta,
 			ProcessTitle: "Container ETA",
-			Description:  "Container sudah sampai di Malaysia.",
+			Description:  etaDescription,
 		})
+
+		/*If Delay*/
+		for _, rowDelayE := range delayEta {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         rowDelayE.TglDelay,
+				ProcessTitle: "Container Delay ETA",
+				Description:  rowDelayE.Keterangan,
+			})
+		}
+
+		/*After Delay*/
+		lastDelayEtaDate := delayEtaLast.TglDelay.Format("2006-01-02 15:04:05")
+		if lastDelayEtaDate <= nowDate {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         delayEtaLast.TglDelay,
+				ProcessTitle: "Container Eta",
+				Description:  etaDescription,
+			})
+		}
 	}
 
-	for _, rowDelayE := range delayEta {
-		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
-			Date:         rowDelayE.TglDelay,
-			ProcessTitle: "Container Delay ETA",
-			Description:  rowDelayE.Keterangan,
-		})
-	}
-
-	if container.TglAntriKapal != "" {
+	if container.StatusContainer.Urutan >= 6 && container.TglAntriKapal.IsZero() == false {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglAntriKapal,
 			ProcessTitle: "Container Antri Kapal",
@@ -131,7 +159,15 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TglEstDumai != "" {
+	if container.StatusContainer.Urutan >= 7 && container.TglAturKapal.IsZero() == false {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglAturKapal,
+			ProcessTitle: "Container Atur Kapal",
+			Description:  "Container sudah dapat jadwal kapal, menunggu dikirim ke Indonesia.",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 8 && container.TglEstDumai.IsZero() == false {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglEstDumai,
 			ProcessTitle: "Container Estimasi Dumai",
@@ -139,7 +175,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TglPib != "" {
+	if container.StatusContainer.Urutan >= 9 && container.TglPib.IsZero() == false {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglPib,
 			ProcessTitle: "Container PIB",
@@ -147,7 +183,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TglNotul != "" {
+	if container.StatusContainer.Urutan >= 10 && container.TglNotul.IsZero() == false {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TglNotul,
 			ProcessTitle: "Container Notul",
@@ -155,7 +191,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TanggalMonitoringC != "" {
+	if container.StatusContainer.Urutan >= 11 {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TanggalMonitoringC,
 			ProcessTitle: "Container Monitoring",
@@ -163,7 +199,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 		})
 	}
 
-	if container.TanggalArrivedC != "" {
+	if container.StatusContainer.Urutan >= 12 {
 		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 			Date:         container.TanggalArrivedC,
 			ProcessTitle: "Container Arrived",
@@ -176,6 +212,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 	receiptDetailResult.BarcodeDetailReceipt = barcodeDetail
 	receiptDetailResult.StatusDetailReceipt = statusDetail
 
+	//fmt.Printf("%+v\n", lastDelayDate)
 	return receiptDetailResult
 }
 

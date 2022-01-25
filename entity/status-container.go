@@ -5,10 +5,8 @@ type StatusContainerTable interface {
 }
 
 type StatusContainer struct {
-	ID    uint64 `gorm:"primary_key:auto_increment" json:"id"`
-	IDRts string `json:"id_rts"`
-	Qty   int32  `json:"qty"`
-	Berat string `json:"berat"`
+	ID     uint64 `gorm:"primary_key:auto_increment" json:"id"`
+	Urutan int64  `json:"urutan"`
 }
 
 func (StatusContainer) TableName() string {
