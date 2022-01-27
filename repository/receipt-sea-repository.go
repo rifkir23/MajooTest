@@ -47,8 +47,9 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 
 	var etaDescription string
 
-	db.connection.Model(&receiptSea).Select("resi.id_resi as ReceiptSeaId,resi.id_resi_rts as ReceiptRtsId,konfirmasi_resi as StatusConfirm,'123/WC-tes' as MarkingCode,nomor as ReceiptSeaNumber,tanggal as Date,tel,'081312345678' as WhatsappNumber,resi.note,gudang as Warehouse,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
+	db.connection.Model(&receiptSea).Select("resi.id_resi as ReceiptSeaId,resi.id_resi_rts as ReceiptRtsId,konfirmasi_resi as StatusConfirm,customer.kode as MarkingCode,nomor as ReceiptSeaNumber,tanggal as Date,tel,customer.whatsapp as WhatsappNumber,resi.note,gudang as Warehouse,invoice_asuransi.jumlah_asuransi as InsuranceNumber").
 		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").
+		Joins("LEFT JOIN customer on resi.cust_id = customer.id_cust").
 		First(&receiptDetail, receiptId)
 
 	db.connection.Model(&giw).Where("resi_id = ?", receiptId).
@@ -114,7 +115,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 
 		/*Otw After Delay*/
 		lastDelayOtwDate := delayOtwLast.TglDelay.Format("2006-01-02 15:04:05")
-		if lastDelayOtwDate <= nowDate {
+		if delayOtwLast.TglDelay.IsZero() == false && lastDelayOtwDate <= nowDate {
 			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 				Date:         delayOtwLast.TglDelay,
 				ProcessTitle: "Container OTW",
@@ -142,7 +143,7 @@ func (db *receiptSeaConnection) Detail(receiptId int64, containerId int64) dto.R
 
 		/*After Delay*/
 		lastDelayEtaDate := delayEtaLast.TglDelay.Format("2006-01-02 15:04:05")
-		if lastDelayEtaDate <= nowDate {
+		if delayEtaLast.TglDelay.IsZero() == false && lastDelayEtaDate <= nowDate {
 			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
 				Date:         delayEtaLast.TglDelay,
 				ProcessTitle: "Container Eta",
