@@ -12,8 +12,8 @@ import (
 )
 
 type UserValidateDTO struct {
-	AccessUuid string `json:"access_uuid"`
-	UserId     uint64 `json:"user_id"`
+	AccessUuid string `json:"accessUuid"`
+	UserId     uint64 `json:"userId"`
 	Username   string `json:"username"`
 	Name       string `json:"name"`
 	Email      string `json:"email"`
@@ -29,8 +29,8 @@ func ValidateJwtToken(r *http.Request) (*UserValidateDTO, error) {
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		accessUuid := claims["access_uuid"].(string)
-		userId, err := strconv.ParseUint(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+		accessUuid := claims["accessUuid"].(string)
+		userId, err := strconv.ParseUint(fmt.Sprintf("%.f", claims["userId"]), 10, 64)
 		if err != nil {
 			return nil, err
 		}
