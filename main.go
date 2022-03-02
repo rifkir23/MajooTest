@@ -35,6 +35,7 @@ func main() {
 	r.GET("/list", receiptSeaController.List)
 	r.GET("/receipt/list", receiptController.List)
 	r.POST("/container-by-receipt", receiptSeaController.ReceiptByContainer)
+	r.GET("/tracking", receiptSeaController.Tracking)
 
 	docs.SwaggerInfo.BasePath = os.Getenv("SWAGGER_BASE_PATH")
 	v1 := r.Group("/v1")

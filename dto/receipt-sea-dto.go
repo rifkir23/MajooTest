@@ -68,6 +68,21 @@ type ReceiptDetail struct {
 	InsuranceNumber  string `json:"insuranceNumber"`
 }
 
+type ReceiptDetailTracking struct {
+	ReceiptSeaId     uint64 `json:"id"`
+	ReceiptRtsId     uint64 `json:"receiptIdRts"`
+	StatusConfirm    string `json:"status"`
+	MarkingCode      string `json:"markingCode"`
+	ReceiptSeaNumber string `json:"receiptNumber"`
+	Date             string `json:"date"`
+	Tel              string `json:"phoneNumber"`
+	WhatsappNumber   string `json:"whatsappNumber"`
+	Note             string `json:"note"`
+	Warehouse        string `json:"warehouseLocation"`
+	InsuranceNumber  string `json:"insuranceNumber"`
+	ContainerId      string `json:"containerId"`
+}
+
 type BarcodeDetailReceipt struct {
 	TotalCartons string      `json:"totalCartons"`
 	TotalQty     string      `json:"totalQty"`

@@ -4,318 +4,366 @@
         "contact": {}
     },
     "paths": {
-      "/container-by-receipt": {
-        "post": {
-          "description": "Receipt By Container",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "summary": "All example",
-          "parameters": [
-            {
-              "description": "ReceiptByContainer",
-              "name": "ReceiptByContainer",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/dto.ReceiptNumber"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/helper.Response"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "$ref": "#/definitions/dto.ContainerByReceipt"
-                      }
+        "/container-by-receipt": {
+            "post": {
+                "description": "Receipt By Container",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "description": "ReceiptByContainer",
+                        "name": "ReceiptByContainer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReceiptNumber"
+                        }
                     }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
-      "/count": {
-        "get": {
-          "description": "Count Receipt Sea",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "summary": "All example",
-          "parameters": [
-            {
-              "type": "string",
-              "description": "Insert your access token. Format: Bearer access_token",
-              "name": "Authorization",
-              "in": "header",
-              "required": true
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/helper.Response"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "$ref": "#/definitions/dto.CountReceiptSea"
-                      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ContainerByReceipt"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
-                  }
-                ]
-              }
+                }
             }
-          }
-        }
-      },
-      "/detail": {
-        "get": {
-          "description": "Receipt Detail",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "summary": "All example",
-          "parameters": [
-            {
-              "type": "integer",
-              "description": "ReceiptId",
-              "name": "receiptId",
-              "in": "query"
-            },
-            {
-              "type": "integer",
-              "description": "ContainerId",
-              "name": "containerId",
-              "in": "query"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/helper.Response"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "$ref": "#/definitions/dto.ReceiptListResult"
-                      }
+        },
+        "/count": {
+            "get": {
+                "description": "Count Receipt Sea",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your access token. Format: Bearer access_token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
-      "/list": {
-        "get": {
-          "description": "Receipt List",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "summary": "All example",
-          "parameters": [
-            {
-              "type": "string",
-              "description": "Insert your access token. Format: Bearer access_token",
-              "name": "Authorization",
-              "in": "header",
-              "required": true
-            },
-            {
-              "type": "integer",
-              "description": "Pages",
-              "name": "page",
-              "in": "query"
-            },
-            {
-              "type": "integer",
-              "description": "Limit",
-              "name": "limit",
-              "in": "query"
-            },
-            {
-              "type": "string",
-              "description": "Status",
-              "name": "status",
-              "in": "query"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/helper.Response"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "$ref": "#/definitions/dto.ReceiptListResult"
-                      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.CountReceiptSea"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
-                  }
-                ]
-              }
+                }
             }
-          }
-        }
-      },
-      "/receipt/list": {
-        "get": {
-          "description": "Receipt List",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "summary": "All example",
-          "parameters": [
-            {
-              "type": "string",
-              "description": "Insert your access token. Format: Bearer access_token",
-              "name": "Authorization",
-              "in": "header",
-              "required": true
-            },
-            {
-              "type": "integer",
-              "description": "Pages",
-              "name": "page",
-              "in": "query"
-            },
-            {
-              "type": "integer",
-              "description": "Limit",
-              "name": "limit",
-              "in": "query"
-            },
-            {
-              "type": "string",
-              "description": "receiptType",
-              "name": "receiptType",
-              "in": "query"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/helper.Response"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "$ref": "#/definitions/dto.ReceiptListByTypeResult"
-                      }
+        },
+        "/detail": {
+            "get": {
+                "description": "Receipt Detail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ReceiptId",
+                        "name": "receiptId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ContainerId",
+                        "name": "containerId",
+                        "in": "query"
                     }
-                  }
-                ]
-              }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
             }
-          }
+        },
+        "/list": {
+            "get": {
+                "description": "Receipt List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your access token. Format: Bearer access_token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Pages",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/receipt/list": {
+            "get": {
+                "description": "Receipt List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "All example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your access token. Format: Bearer access_token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Pages",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "receiptType",
+                        "name": "receiptType",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListByTypeResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/tracking": {
+            "get": {
+                "description": "Receipt Tracking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Tracking example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "receiptNumber",
+                        "name": "receiptNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "markingCode",
+                        "name": "markingCode",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helper.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ReceiptListResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
-      }
     },
     "definitions": {
-      "dto.ContainerByReceipt": {
-        "type": "object",
-        "properties": {
-          "containerID": {
-            "type": "integer"
-          },
-          "receiptID": {
-            "type": "integer"
-          },
-          "status": {
-            "type": "string"
-          }
+        "dto.ContainerByReceipt": {
+            "type": "object",
+            "properties": {
+                "containerID": {
+                    "type": "integer"
+                },
+                "receiptID": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CountReceiptSea": {
+            "type": "object",
+            "properties": {
+                "arrivedSoon": {
+                    "type": "integer"
+                },
+                "delay": {
+                    "type": "integer"
+                },
+                "onTheWay": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ReceiptListByTypeResult": {
+            "type": "object",
+            "properties": {
+                "content": {},
+                "pagination": {}
+            }
+        },
+        "dto.ReceiptListResult": {
+            "type": "object",
+            "properties": {
+                "content": {},
+                "pagination": {}
+            }
+        },
+        "dto.ReceiptNumber": {
+            "type": "object",
+            "properties": {
+                "receiptSeaNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "helper.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
         }
-      },
-      "dto.CountReceiptSea": {
-        "type": "object",
-        "properties": {
-          "arrivedSoon": {
-            "type": "integer"
-          },
-          "delay": {
-            "type": "integer"
-          },
-          "onTheWay": {
-            "type": "integer"
-          }
-        }
-      },
-      "dto.ReceiptListByTypeResult": {
-        "type": "object",
-        "properties": {
-          "content": {},
-          "pagination": {}
-        }
-      },
-      "dto.ReceiptListResult": {
-        "type": "object",
-        "properties": {
-          "content": {},
-          "pagination": {}
-        }
-      },
-      "dto.ReceiptNumber": {
-        "type": "object",
-        "properties": {
-          "receiptSeaNumber": {
-            "type": "string"
-          }
-        }
-      },
-      "helper.Response": {
-        "type": "object",
-        "properties": {
-          "data": {},
-          "errors": {},
-          "message": {
-            "type": "string"
-          },
-          "status": {
-            "type": "boolean"
-          }
-        }
-      }
     }
 }
