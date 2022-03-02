@@ -1,12 +1,13 @@
 package repository
 
 import (
+	"strings"
+	"time"
+
 	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/entity"
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"gorm.io/gorm"
-	"strings"
-	"time"
 )
 
 //ReceiptSeaRepository is a ....
@@ -15,6 +16,7 @@ type ReceiptSeaRepository interface {
 	CountReceiptSea(customerId int64, cd dto.CountReceiptSea) dto.CountReceiptSea
 	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResult
 	ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt
+	Tracking(receiptNumber string, markingCode string) dto.ReceiptDetailResult
 }
 
 type receiptSeaConnection struct {
@@ -314,4 +316,198 @@ func (db *receiptSeaConnection) ReceiptByContainer(receiptSeaNumber string) []dt
 		Where("resi.nomor = ?", receiptSeaNumber).Group("giw.container_id").Find(&receiptByContainerList)
 
 	return receiptByContainerList
+}
+
+func (db *receiptSeaConnection) Tracking(receiptNumber string, markingCode string) dto.ReceiptDetailResult {
+	var receiptSea entity.Resi
+	var giw entity.Giw
+	var container entity.Container
+	var historyReceiptSea entity.ReceiptSeaHistory
+	var delay []entity.Delay
+
+	var receiptDetailResult dto.ReceiptDetailResult
+	var receiptDetail dto.ReceiptDetailTracking
+	var barcodeDetail dto.BarcodeDetailReceipt
+	var barcodeList []dto.BarcodeList
+	var statusDetail []dto.StatusDetailReceipt
+	var delayOtw []dto.DelayOtw
+	var delayEta []dto.DelayEta
+	var delayOtwLast dto.DelayOtwLast
+	var delayEtaLast dto.DelayEtaLast
+
+	var etaDescription string
+
+	db.connection.Model(&receiptSea).Select("resi.id_resi as ReceiptSeaId,resi.id_resi_rts as ReceiptRtsId,konfirmasi_resi as StatusConfirm,customer.kode as MarkingCode,resi.nomor as ReceiptSeaNumber,tanggal as Date,tel,customer.whatsapp as WhatsappNumber,resi.note,gudang as Warehouse,invoice_asuransi.jumlah_asuransi as InsuranceNumber,giw.container_id as ContainerId").
+		Joins("LEFT JOIN giw on resi.id_resi = giw.resi_id").
+		Joins("LEFT JOIN invoice_asuransi on resi.id_resi = invoice_asuransi.id_resi").
+		Joins("LEFT JOIN customer on resi.cust_id = customer.id_cust").
+		Where("resi.nomor = ? and customer.kode = ?", receiptNumber, markingCode).
+		First(&receiptDetail)
+
+	db.connection.Model(&giw).
+		Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi").
+		Joins("LEFT JOIN customer on resi.cust_id = customer.id_cust").
+		Where("resi.nomor = ? and customer.kode = ?", receiptNumber, markingCode).
+		Find(&barcodeList)
+
+	db.connection.Model(&giw).Select("sum(ctns) as TotalCartons,sum(qty*ctns) as TotalQty,round(sum(nilai*ctns),3) as TotalValue,round(sum(volume*ctns),3) as TotalVolume,round(sum(berat*ctns),3) as TotalWeight").
+		Joins("LEFT JOIN resi on giw.resi_id = resi.id_resi").
+		Joins("LEFT JOIN customer on resi.cust_id = customer.id_cust").
+		Where("resi.nomor = ? and customer.kode = ?", receiptNumber, markingCode).
+		Group("resi_id").
+		Find(&barcodeDetail)
+
+	db.connection.Model(&historyReceiptSea).Select("tanggal as Date,status_resi.nama as ProcessTitle,status_resi.keterangan as Description").
+		Joins("LEFT JOIN status_resi on history_date_status.tipe_resi = status_resi.id").
+		Where("resi_id = ?", receiptDetail.ReceiptRtsId).
+		Find(&statusDetail)
+
+	db.connection.Preload("StatusContainer").Where("id_rts", receiptDetail.ContainerId).First(&container)
+	db.connection.Model(&delay).Where("id_container_rts", receiptDetail.ContainerId).Where("tipe", 1).Order("tgl_delay asc").Find(&delayOtw)
+	db.connection.Model(&delay).Where("id_container_rts", receiptDetail.ContainerId).Where("tipe", 2).Order("tgl_delay asc").Find(&delayEta)
+	db.connection.Model(&delay).Where("id_container_rts", receiptDetail.ContainerId).Where("tipe", 1).Order("tgl_delay desc").First(&delayOtwLast)
+	db.connection.Model(&delay).Where("id_container_rts", receiptDetail.ContainerId).Where("tipe", 2).Order("tgl_delay desc").First(&delayEtaLast)
+
+	nowDate := time.Now().Format("2006-01-02 15:04:05")
+	if strings.Index(container.Kode, "PK") >= 0 {
+		etaDescription = "Container sudah sampai di Malaysia."
+	} else {
+		etaDescription = "Container sudah sampai di SMG."
+	}
+
+	if container.StatusContainer.Urutan >= 2 {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglLoading,
+			ProcessTitle: "Loading Container",
+			Description:  "Barang Sedang dimuat kedalam Container di China.",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 3 {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglClosing,
+			ProcessTitle: "Closing Container",
+			Description:  "Container sudah dapat jadwal jalan kapal.",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 4 {
+		/*Container Otw (No Delay)*/
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TanggalBerangkatC,
+			ProcessTitle: "Container OTW",
+			Description:  "Container sudah berangkat dari pelabuhan China.",
+		})
+
+		/*If Delay*/
+		for _, rowDelayO := range delayOtw {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         rowDelayO.TglDelay,
+				ProcessTitle: "Container Delay Otw",
+				Description:  rowDelayO.Keterangan,
+			})
+		}
+
+		/*Otw After Delay*/
+		lastDelayOtwDate := delayOtwLast.TglDelay.Format("2006-01-02 15:04:05")
+		if delayOtwLast.TglDelay.IsZero() == false && lastDelayOtwDate <= nowDate {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         delayOtwLast.TglDelay,
+				ProcessTitle: "Container OTW",
+				Description:  "Container sudah berangkat dari pelabuhan China.",
+			})
+		}
+	}
+
+	if container.StatusContainer.Urutan >= 5 && container.TglEta.IsZero() == false {
+		/*Container Eta (No Delay)*/
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglEta,
+			ProcessTitle: "Container ETA",
+			Description:  etaDescription,
+		})
+
+		/*If Delay*/
+		for _, rowDelayE := range delayEta {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         rowDelayE.TglDelay,
+				ProcessTitle: "Container Delay ETA",
+				Description:  rowDelayE.Keterangan,
+			})
+		}
+
+		/*After Delay*/
+		lastDelayEtaDate := delayEtaLast.TglDelay.Format("2006-01-02 15:04:05")
+		if delayEtaLast.TglDelay.IsZero() == false && lastDelayEtaDate <= nowDate {
+			statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+				Date:         delayEtaLast.TglDelay,
+				ProcessTitle: "Container Eta",
+				Description:  etaDescription,
+			})
+		}
+	}
+
+	if container.StatusContainer.Urutan >= 6 && container.TglAntriKapal.IsZero() == false {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglAntriKapal,
+			ProcessTitle: "Container Antri Kapal",
+			Description:  "Container sedang proses pemesanan jadwal kapal ke Indonesia.",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 7 && container.TglAturKapal.IsZero() == false {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglAturKapal,
+			ProcessTitle: "Container Atur Kapal",
+			Description:  "Container sudah dapat jadwal kapal, menunggu dikirim ke Indonesia.",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 8 && container.TglEstDumai.IsZero() == false {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglEstDumai,
+			ProcessTitle: "Container Estimasi Dumai",
+			Description:  "Container sudah sampai di Indonesia dan sedang proses custom clearance",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 9 && container.TglPib.IsZero() == false {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglPib,
+			ProcessTitle: "Container PIB",
+			Description:  "",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 10 && container.TglNotul.IsZero() == false {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TglNotul,
+			ProcessTitle: "Container Notul",
+			Description:  "",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 11 {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TanggalMonitoringC,
+			ProcessTitle: "Container Monitoring",
+			Description:  "Barang sudah Sudah Bisa diMonitoring",
+		})
+	}
+
+	if container.StatusContainer.Urutan >= 12 {
+		statusDetail = append(statusDetail, dto.StatusDetailReceipt{
+			Date:         container.TanggalArrivedC,
+			ProcessTitle: "Container Arrived",
+			Description:  "Tiba di Warehouse Jakarta",
+		})
+	}
+
+	receiptDetailResult.ReceiptDetail = receiptDetail
+	barcodeDetail.BarcodeList = barcodeList
+	receiptDetailResult.BarcodeDetailReceipt = barcodeDetail
+	receiptDetailResult.StatusDetailReceipt = statusDetail
+
+	//fmt.Printf("%+v\n", lastDelayDate)
+	return receiptDetailResult
 }

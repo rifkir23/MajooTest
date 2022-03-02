@@ -11,6 +11,7 @@ type ReceiptSeaService interface {
 	Count(customerId int64, cd dto.CountReceiptSea) dto.CountReceiptSea
 	List(customerId int64, page int64, limit int64, status string) dto.ReceiptListResult
 	ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt
+	Tracking(receiptNumber string, markingCode string) dto.ReceiptDetailResult
 }
 
 type receiptSeaService struct {
@@ -38,4 +39,8 @@ func (service *receiptSeaService) List(customerId int64, page int64, limit int64
 
 func (service *receiptSeaService) ReceiptByContainer(receiptSeaNumber string) []dto.ContainerByReceipt {
 	return service.receiptSeaRepository.ReceiptByContainer(receiptSeaNumber)
+}
+
+func (service *receiptSeaService) Tracking(receiptNumber string, markingCode string) dto.ReceiptDetailResult {
+	return service.receiptSeaRepository.Tracking(receiptNumber, markingCode)
 }

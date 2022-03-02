@@ -1,14 +1,15 @@
 package controller
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/wilopo-cargo/microservice-receipt-sea/dto"
 	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
 	"github.com/wilopo-cargo/microservice-receipt-sea/service"
 	"github.com/wilopo-cargo/microservice-receipt-sea/utility"
-	"net/http"
-	"strconv"
 )
 
 //ReceiptSeaController is a ...
@@ -17,6 +18,7 @@ type ReceiptSeaController interface {
 	Detail(context *gin.Context)
 	List(context *gin.Context)
 	ReceiptByContainer(context *gin.Context)
+	Tracking(context *gin.Context)
 }
 
 type receiptSeaController struct {
@@ -128,6 +130,26 @@ func (c *receiptSeaController) ReceiptByContainer(context *gin.Context) {
 	}
 
 	var receiptSea = c.receiptSeaService.ReceiptByContainer(receiptNumber.ReceiptSeaNumber)
+	res := helper.BuildResponse(true, "OK", receiptSea)
+	context.JSON(http.StatusOK, res)
+}
+
+// Tracking godoc
+// @Summary Tracking example
+// @Schemes
+// @Description Receipt Tracking
+// @Accept json
+// @Produce json
+// @Param Tracking receiptNumber  query string  true  "receiptNumber"
+// @Param Tracking markingCode  query string  true  "markingCode"
+// @Success 200 {object} helper.Response{data=dto.ReceiptListResult}
+// @Router /tracking [GET]
+func (c *receiptSeaController) Tracking(context *gin.Context) {
+	receiptNumber := context.Query("receiptNumber")
+	markingCode := context.Query("markingCode")
+
+	var receiptSea = c.receiptSeaService.Tracking(receiptNumber, markingCode)
+
 	res := helper.BuildResponse(true, "OK", receiptSea)
 	context.JSON(http.StatusOK, res)
 }
