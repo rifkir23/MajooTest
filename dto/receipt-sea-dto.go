@@ -102,6 +102,18 @@ type BarcodeList struct {
 	HargaJual float64 `json:"sellingPrice"`
 }
 
+type BarcodeListTracking struct {
+	ID        uint64  `json:"id"`
+	Nomor     string  `json:"barcode"`
+	Barang    string  `json:"goods"`
+	Ctns      string  `json:"cartons"`
+	Qty       string  `json:"qty"`
+	Nilai     string  `json:"value"`
+	Volume    string  `json:"volume"`
+	Berat     string  `json:"weight"`
+	HargaJual float64 `json:"sellingPrice"`
+}
+
 type StatusDetailReceipt struct {
 	//ID           uint64 `json:"id"`
 	Date         time.Time `json:"date"`
