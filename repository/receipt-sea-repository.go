@@ -328,7 +328,7 @@ func (db *receiptSeaConnection) Tracking(receiptNumber string, markingCode strin
 	var receiptDetailResult dto.ReceiptDetailResult
 	var receiptDetail dto.ReceiptDetailTracking
 	var barcodeDetail dto.BarcodeDetailReceipt
-	var barcodeList []dto.BarcodeList
+	var barcodeList []dto.BarcodeListTracking
 	var statusDetail []dto.StatusDetailReceipt
 	var delayOtw []dto.DelayOtw
 	var delayEta []dto.DelayEta
