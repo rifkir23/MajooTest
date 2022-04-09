@@ -1,16 +1,14 @@
 package middleware
 
 import (
-	"log"
-	"net/http"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/wilopo-cargo/microservice-receipt-sea/helper"
-	"github.com/wilopo-cargo/microservice-receipt-sea/service"
+	"github.com/rifkir23/MjTest/helper"
+	"github.com/rifkir23/MjTest/service"
+	"log"
+	"net/http"
 )
 
-//AuthorizeJWT validates the token user given, return 401 if not valid
 func AuthorizeJWT(jwtService service.JWTService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")

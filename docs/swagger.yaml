@@ -1,224 +1,88 @@
 definitions:
-  dto.ContainerByReceipt:
+  helper.Pagination:
     properties:
-      containerID:
+      currentPage:
         type: integer
-      receiptID:
+      limit:
         type: integer
-      status:
+      nextPage:
+        type: integer
+      order:
         type: string
-    type: object
-  dto.CountReceiptSea:
-    properties:
-      arrivedSoon:
+      prevPage:
         type: integer
-      delay:
-        type: integer
-      onTheWay:
-        type: integer
-    type: object
-  dto.ReceiptListByTypeResult:
-    properties:
-      content: {}
-      pagination: {}
-    type: object
-  dto.ReceiptListResult:
-    properties:
-      content: {}
-      pagination: {}
-    type: object
-  dto.ReceiptNumber:
-    properties:
-      receiptSeaNumber:
+      sort:
         type: string
+      totalElement:
+        type: integer
+      totalPage:
+        type: integer
     type: object
-  helper.Response:
+  helper.PaginationResponse:
     properties:
       data: {}
-      errors: {}
-      message:
-        type: string
-      status:
-        type: boolean
+      pagination:
+        $ref: '#/definitions/helper.Pagination'
     type: object
 info:
   contact: {}
 paths:
-  /container-by-receipt:
-    post:
-      consumes:
-      - application/json
-      description: Receipt By Container
-      parameters:
-      - description: ReceiptByContainer
-        in: body
-        name: ReceiptByContainer
-        required: true
-        schema:
-          $ref: '#/definitions/dto.ReceiptNumber'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.ContainerByReceipt'
-              type: object
-      summary: All example
-  /count:
+  /transaction/report-merchant:
     get:
       consumes:
       - application/json
-      description: Count Receipt Sea
+      description: Transaction Report By Merchant
       parameters:
-      - description: 'Insert your access token. Format: Bearer access_token'
+      - description: Insert your access token
         in: header
         name: Authorization
         required: true
         type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.CountReceiptSea'
-              type: object
-      summary: All example
-  /detail:
-    get:
-      consumes:
-      - application/json
-      description: Receipt Detail
-      parameters:
-      - description: ReceiptId
-        in: query
-        name: receiptId
-        type: integer
-      - description: ContainerId
-        in: query
-        name: containerId
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.ReceiptListResult'
-              type: object
-      summary: All example
-  /list:
-    get:
-      consumes:
-      - application/json
-      description: Receipt List
-      parameters:
-      - description: 'Insert your access token. Format: Bearer access_token'
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Pages
+      - description: page
         in: query
         name: page
         type: integer
-      - description: Limit
+      - description: limit
         in: query
         name: limit
         type: integer
-      - description: Status
-        in: query
-        name: status
-        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.ReceiptListResult'
-              type: object
-      summary: All example
-  /receipt/list:
+            $ref: '#/definitions/helper.PaginationResponse'
+      security:
+      - BearerToken: []
+      summary: Transaction Report By Merchant
+  /transaction/report-outlet:
     get:
       consumes:
       - application/json
-      description: Receipt List
+      description: Transaction Report By Outlet
       parameters:
-      - description: 'Insert your access token. Format: Bearer access_token'
+      - description: Insert your access token
         in: header
         name: Authorization
         required: true
         type: string
-      - description: Pages
+      - description: page
         in: query
         name: page
         type: integer
-      - description: Limit
+      - description: limit
         in: query
         name: limit
         type: integer
-      - description: receiptType
-        in: query
-        name: receiptType
-        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.ReceiptListByTypeResult'
-              type: object
-      summary: All example
-  /tracking:
-    get:
-      consumes:
-      - application/json
-      description: Receipt Tracking
-      parameters:
-      - description: receiptNumber
-        in: query
-        name: receiptNumber
-        required: true
-        type: string
-      - description: markingCode
-        in: query
-        name: markingCode
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/helper.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.ReceiptListResult'
-              type: object
-      summary: Tracking example
+            $ref: '#/definitions/helper.PaginationResponse'
+      security:
+      - BearerToken: []
+      summary: Transaction Report By Outlet
 swagger: "2.0"

@@ -1,0 +1,14 @@
+your module
+
+go 1.17
+
+require (
+	github.com/dgrijalva/jwt-go
+	github.com/gin-gonic/gin
+	github.com/joho/godotenv
+	github.com/swaggo/files
+	github.com/swaggo/gin-swagger
+	github.com/swaggo/swag
+	gorm.io/driver/mysql
+)
+

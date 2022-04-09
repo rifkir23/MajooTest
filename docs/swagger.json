@@ -4,170 +4,39 @@
         "contact": {}
     },
     "paths": {
-        "/container-by-receipt": {
-            "post": {
-                "description": "Receipt By Container",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "All example",
-                "parameters": [
-                    {
-                        "description": "ReceiptByContainer",
-                        "name": "ReceiptByContainer",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ReceiptNumber"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/helper.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.ContainerByReceipt"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/count": {
+        "/transaction/report-merchant": {
             "get": {
-                "description": "Count Receipt Sea",
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Transaction Report By Merchant",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "All example",
+                "summary": "Transaction Report By Merchant",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Insert your access token. Format: Bearer access_token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/helper.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.CountReceiptSea"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/detail": {
-            "get": {
-                "description": "Receipt Detail",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "All example",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ReceiptId",
-                        "name": "receiptId",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "ContainerId",
-                        "name": "containerId",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/helper.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.ReceiptListResult"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/list": {
-            "get": {
-                "description": "Receipt List",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "All example",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Insert your access token. Format: Bearer access_token",
+                        "description": "Insert your access token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "Pages",
+                        "description": "page",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Limit",
+                        "description": "limit",
                         "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Status",
-                        "name": "status",
                         "in": "query"
                     }
                 ],
@@ -175,126 +44,53 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/helper.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.ReceiptListResult"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/helper.PaginationResponse"
                         }
                     }
                 }
             }
         },
-        "/receipt/list": {
+        "/transaction/report-outlet": {
             "get": {
-                "description": "Receipt List",
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Transaction Report By Outlet",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "All example",
+                "summary": "Transaction Report By Outlet",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Insert your access token. Format: Bearer access_token",
+                        "description": "Insert your access token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "Pages",
+                        "description": "page",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Limit",
+                        "description": "limit",
                         "name": "limit",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "receiptType",
-                        "name": "receiptType",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/helper.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.ReceiptListByTypeResult"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/tracking": {
-            "get": {
-                "description": "Receipt Tracking",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Tracking example",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "receiptNumber",
-                        "name": "receiptNumber",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "markingCode",
-                        "name": "markingCode",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/helper.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.ReceiptListResult"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/helper.PaginationResponse"
                         }
                     }
                 }
@@ -302,66 +98,41 @@
         }
     },
     "definitions": {
-        "dto.ContainerByReceipt": {
+        "helper.Pagination": {
             "type": "object",
             "properties": {
-                "containerID": {
+                "currentPage": {
                     "type": "integer"
                 },
-                "receiptID": {
+                "limit": {
                     "type": "integer"
                 },
-                "status": {
+                "nextPage": {
+                    "type": "integer"
+                },
+                "order": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.CountReceiptSea": {
-            "type": "object",
-            "properties": {
-                "arrivedSoon": {
+                },
+                "prevPage": {
                     "type": "integer"
                 },
-                "delay": {
-                    "type": "integer"
-                },
-                "onTheWay": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ReceiptListByTypeResult": {
-            "type": "object",
-            "properties": {
-                "content": {},
-                "pagination": {}
-            }
-        },
-        "dto.ReceiptListResult": {
-            "type": "object",
-            "properties": {
-                "content": {},
-                "pagination": {}
-            }
-        },
-        "dto.ReceiptNumber": {
-            "type": "object",
-            "properties": {
-                "receiptSeaNumber": {
+                "sort": {
                     "type": "string"
+                },
+                "totalElement": {
+                    "type": "integer"
+                },
+                "totalPage": {
+                    "type": "integer"
                 }
             }
         },
-        "helper.Response": {
+        "helper.PaginationResponse": {
             "type": "object",
             "properties": {
                 "data": {},
-                "errors": {},
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "boolean"
+                "pagination": {
+                    "$ref": "#/definitions/helper.Pagination"
                 }
             }
         }
