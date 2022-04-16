@@ -67,7 +67,7 @@ func GeneratePaginationFromRequest(c *gin.Context) Pagination {
 	// Initializing default
 	limit := 10
 	page := 1
-	sort := "transactions.id"
+	sort := "transactions.created_at"
 	order := "asc"
 	query := c.Request.URL.Query()
 	for key, value := range query {
